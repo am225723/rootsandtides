@@ -1,107 +1,339 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Button, ScrollView, TextInput } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import ScreenContainer from '../components/ScreenContainer';
+import GlassCard from '../components/GlassCard';
+import ActionButton from '../components/ActionButton';
+import SectionHeader from '../components/SectionHeader';
+import QuoteCard from '../components/QuoteCard';
+import { colors, radius, typography } from '../theme';
+
+const RITUALS = [
+  {
+    title: 'Planting a Seed',
+    description: 'A living tribute to their lasting memory',
+    badge: 'GROWTH',
+    badgeColor: colors.green,
+    buttonText: 'Begin Ritual',
+    icon: '🌱',
+  },
+  {
+    title: 'Writing an Unsent Letter',
+    description: 'Express what was left unsaid in your heart',
+    badge: 'RELEASE',
+    badgeColor: colors.coral,
+    buttonText: 'Start Writing',
+    meta: '15-20 min',
+    icon: '✉️',
+  },
+  {
+    title: 'Light a Digital Candle',
+    description: 'Join a global circle of remembrance',
+    badge: 'PRESENCE',
+    badgeColor: colors.purple,
+    buttonText: 'Light Candle',
+    meta: '4,281 candles lit today',
+    icon: '🕯️',
+  },
+];
 
 const SCRIPTS = [
-  { id: 1, title: 'Check in without pressure', text: 'Hey, just thinking of you. No need to reply unless you want to.' },
-  { id: 2, title: 'Need distraction', text: 'Having a rough moment. Could you tell me a random story or distraction?' },
-  { id: 3, title: 'Repair template', text: 'I want to redo how I handled our last conversation. I was overwhelmed and reacted poorly.' }
+  { title: 'Check in without pressure', preview: 'Hey, just thinking of you. No need to reply...' },
+  { title: 'Need distraction', preview: 'Having a rough moment. Could you tell me...' },
+  { title: 'Repair template', preview: 'I want to redo how I handled our last...' },
 ];
 
 export default function CircleScreen() {
-  const [selectedScript, setSelectedScript] = useState('');
+  const [activeTab, setActiveTab] = useState<'rituals' | 'connections'>('rituals');
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.header}>Your Support Circle</Text>
-
-      <Text style={styles.sectionTitle}>Pre-written Outreach Scripts</Text>
-      {SCRIPTS.map(script => (
-        <View key={script.id} style={styles.scriptContainer}>
-          <Text style={styles.scriptTitle}>{script.title}</Text>
-          <Button
-            title="Use Script"
-            onPress={() => setSelectedScript(script.text)}
-            color="#20b2aa"
-          />
+    <ScreenContainer>
+      <View style={styles.headerRow}>
+        <View>
+          <Text style={styles.headerTitle}>Rites & Rituals</Text>
+          <Text style={styles.headerLabel}>ROOTS & TIDES</Text>
         </View>
-      ))}
-
-      {selectedScript ? (
-        <View style={styles.draftContainer}>
-          <Text style={styles.sectionTitle}>Draft Message:</Text>
-          <TextInput
-            style={styles.textArea}
-            multiline
-            value={selectedScript}
-            onChangeText={setSelectedScript}
-          />
-          <Button title="Send Message" onPress={() => console.log('Sending message:', selectedScript)} />
-        </View>
-      ) : null}
-
-      <View style={styles.escalationSettings}>
-        <Text style={styles.sectionTitle}>Consent-based Escalation Settings</Text>
-        <Text>Status: Enabled</Text>
-        <Text style={styles.note}>"If I hit Anchor twice in 2 hours, ask if I want to notify my emergency contact."</Text>
+        <TouchableOpacity style={styles.searchBtn}>
+          <Text style={styles.searchIcon}>⌕</Text>
+        </TouchableOpacity>
       </View>
-    </ScrollView>
+
+      <View style={styles.tabBar}>
+        <TouchableOpacity
+          style={[styles.tab, activeTab === 'rituals' && styles.tabActive]}
+          onPress={() => setActiveTab('rituals')}
+        >
+          <Text style={[styles.tabText, activeTab === 'rituals' && styles.tabTextActive]}>
+            Rituals
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tab, activeTab === 'connections' && styles.tabActive]}
+          onPress={() => setActiveTab('connections')}
+        >
+          <Text style={[styles.tabText, activeTab === 'connections' && styles.tabTextActive]}>
+            Connections
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {activeTab === 'rituals' ? (
+        <>
+          <View style={styles.heroSection}>
+            <Text style={styles.heroTitle}>Honor Your</Text>
+            <Text style={styles.heroTitleAccent}>Connection</Text>
+            <Text style={styles.heroSubtitle}>
+              Gentle activities to help you process loss and keep their memory alive.
+            </Text>
+          </View>
+
+          {RITUALS.map((ritual) => (
+            <GlassCard key={ritual.title} variant="default" style={styles.ritualCard}>
+              <View style={styles.ritualImagePlaceholder}>
+                <Text style={styles.ritualImageIcon}>{ritual.icon}</Text>
+              </View>
+              <View style={styles.ritualContent}>
+                <View style={styles.ritualTitleRow}>
+                  <Text style={styles.ritualTitle}>{ritual.title}</Text>
+                  <View style={[styles.ritualBadge, { backgroundColor: ritual.badgeColor + '20' }]}>
+                    <Text style={[styles.ritualBadgeText, { color: ritual.badgeColor }]}>
+                      {ritual.badge}
+                    </Text>
+                  </View>
+                </View>
+                <Text style={styles.ritualDescription}>{ritual.description}</Text>
+                {ritual.meta && (
+                  <Text style={styles.ritualMeta}>⏱ {ritual.meta}</Text>
+                )}
+                <TouchableOpacity style={[styles.ritualButton, { backgroundColor: ritual.badgeColor }]}>
+                  <Text style={styles.ritualButtonText}>{ritual.buttonText}</Text>
+                </TouchableOpacity>
+              </View>
+            </GlassCard>
+          ))}
+        </>
+      ) : (
+        <>
+          <SectionHeader title="Outreach Scripts" />
+          {SCRIPTS.map((script) => (
+            <GlassCard key={script.title} variant="default">
+              <Text style={styles.scriptTitle}>{script.title}</Text>
+              <Text style={styles.scriptPreview}>{script.preview}</Text>
+              <TouchableOpacity style={styles.useScriptBtn}>
+                <Text style={styles.useScriptText}>Use Script →</Text>
+              </TouchableOpacity>
+            </GlassCard>
+          ))}
+
+          <GlassCard variant="accent">
+            <View style={styles.escalationHeader}>
+              <Text style={styles.escalationIcon}>🛡️</Text>
+              <Text style={styles.escalationTitle}>Consent-based Escalation</Text>
+            </View>
+            <Text style={styles.escalationDescription}>
+              "If I hit Anchor twice in 2 hours, ask if I want to notify my emergency contact."
+            </Text>
+            <View style={styles.escalationToggle}>
+              <Text style={styles.escalationStatus}>Status: Enabled</Text>
+              <View style={styles.toggleTrack}>
+                <View style={styles.toggleThumb} />
+              </View>
+            </View>
+          </GlassCard>
+        </>
+      )}
+
+      <QuoteCard
+        quote='"Connection is the thread that grief cannot sever. It transforms, but never truly breaks."'
+      />
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    paddingTop: 16,
     marginBottom: 20,
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    marginTop: 20,
+  headerTitle: {
+    ...typography.title,
+    marginBottom: 2,
   },
-  scriptContainer: {
+  headerLabel: {
+    ...typography.label,
+    color: colors.coral,
+  },
+  searchBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.backgroundCard,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  searchIcon: {
+    fontSize: 20,
+    color: colors.textSecondary,
+  },
+  tabBar: {
+    flexDirection: 'row',
+    backgroundColor: colors.backgroundCard,
+    borderRadius: radius.md,
+    padding: 4,
+    marginBottom: 24,
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 10,
+    alignItems: 'center',
+    borderRadius: radius.sm,
+  },
+  tabActive: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  tabText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.textMuted,
+  },
+  tabTextActive: {
+    color: colors.textPrimary,
+  },
+  heroSection: {
+    marginBottom: 24,
+  },
+  heroTitle: {
+    fontSize: 30,
+    fontWeight: '700',
+    color: colors.textPrimary,
+  },
+  heroTitleAccent: {
+    fontSize: 30,
+    fontWeight: '700',
+    color: colors.coral,
+    marginBottom: 8,
+  },
+  heroSubtitle: {
+    ...typography.body,
+    color: colors.textSecondary,
+    lineHeight: 22,
+  },
+  ritualCard: {
+    padding: 0,
+    overflow: 'hidden',
+  },
+  ritualImagePlaceholder: {
+    height: 120,
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  ritualImageIcon: {
+    fontSize: 48,
+  },
+  ritualContent: {
+    padding: 16,
+  },
+  ritualTitleRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 10,
-    backgroundColor: '#f5f5f5',
-    marginBottom: 10,
-    borderRadius: 5,
+    marginBottom: 6,
   },
-  scriptTitle: {
-    fontSize: 16,
+  ritualTitle: {
+    ...typography.subtitle,
     flex: 1,
   },
-  draftContainer: {
-    marginTop: 20,
-    padding: 15,
-    backgroundColor: '#e0ffff',
-    borderRadius: 8,
+  ritualBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: radius.full,
   },
-  textArea: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    backgroundColor: '#fff',
-    padding: 10,
-    height: 100,
+  ritualBadgeText: {
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
+  ritualDescription: {
+    ...typography.bodySmall,
+    color: colors.textMuted,
     marginBottom: 10,
-    textAlignVertical: 'top',
   },
-  escalationSettings: {
-    marginTop: 30,
-    padding: 15,
-    backgroundColor: '#ffe4e1',
-    borderRadius: 8,
+  ritualMeta: {
+    ...typography.tag,
+    color: colors.textMuted,
+    marginBottom: 12,
   },
-  note: {
-    fontStyle: 'italic',
-    color: '#555',
-    marginTop: 5,
-  }
+  ritualButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: radius.full,
+    alignSelf: 'flex-end',
+  },
+  ritualButtonText: {
+    ...typography.buttonText,
+    fontSize: 14,
+  },
+  scriptTitle: {
+    ...typography.subtitle,
+    fontSize: 16,
+    marginBottom: 4,
+  },
+  scriptPreview: {
+    ...typography.bodySmall,
+    color: colors.textMuted,
+    marginBottom: 10,
+  },
+  useScriptBtn: {
+    alignSelf: 'flex-end',
+  },
+  useScriptText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.coral,
+  },
+  escalationHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 10,
+  },
+  escalationIcon: {
+    fontSize: 20,
+  },
+  escalationTitle: {
+    ...typography.subtitle,
+    fontSize: 16,
+  },
+  escalationDescription: {
+    ...typography.quote,
+    fontSize: 14,
+    marginBottom: 14,
+  },
+  escalationToggle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  escalationStatus: {
+    ...typography.bodySmall,
+    color: colors.green,
+  },
+  toggleTrack: {
+    width: 48,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: colors.green,
+    justifyContent: 'center',
+    paddingHorizontal: 3,
+    alignItems: 'flex-end',
+  },
+  toggleThumb: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: '#FFFFFF',
+  },
 });

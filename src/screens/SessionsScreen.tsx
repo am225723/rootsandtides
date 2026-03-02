@@ -1,94 +1,313 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Button, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import ScreenContainer from '../components/ScreenContainer';
+import GlassCard from '../components/GlassCard';
+import ActionButton from '../components/ActionButton';
+import SectionHeader from '../components/SectionHeader';
+import QuoteCard from '../components/QuoteCard';
+import { colors, radius, typography } from '../theme';
 
-const SESSIONS = [
-  { id: 1, title: 'Session 1: Panic education + interoceptive map', status: 'completed' },
-  { id: 2, title: 'Session 2: Trigger ladder + exposure plan', status: 'current' },
-  { id: 3, title: 'Session 3: Cognitive restructuring + safety behaviors', status: 'upcoming' },
+const PHASES = [
+  {
+    title: 'The Raw Edge',
+    modules: [
+      { title: 'Biology of Grief', icon: '🧠', status: 'RESUMING', color: colors.blue },
+      { title: 'Stabilization', icon: '≋', status: 'LOCKED', color: colors.textMuted },
+    ],
+    featured: {
+      title: 'Safety in Emotions',
+      description: 'Understanding the somatic response to parental loss.',
+      icon: '🛡️',
+    },
+  },
+  {
+    title: 'The Messy Middle',
+    modules: [
+      { title: 'Guilt & If Onlys', icon: '🔄', status: 'IN PROGRESS', color: colors.coral },
+      { title: 'Family Dynamics', icon: '👥', status: 'STARTED', color: colors.gold },
+    ],
+    featured: {
+      title: 'The Imperfect Parent',
+      description: 'Processing complicated memories with compassion.',
+      icon: '💭',
+    },
+  },
+  {
+    title: 'Integration',
+    modules: [
+      { title: 'New Roles', icon: '🌱', status: 'NOT STARTED', color: colors.green },
+      { title: 'Meaning Making', icon: '✦', status: 'LOCKED', color: colors.textMuted },
+    ],
+    featured: null,
+  },
 ];
 
 export default function SessionsScreen() {
-  const [activeSession, setActiveSession] = useState<number | null>(null);
-
-  if (activeSession) {
-    return (
-      <View style={styles.sessionContainer}>
-        <Text style={styles.header}>Active Session {activeSession}</Text>
-        <Text style={styles.text}>1. Check-in + symptom snapshot</Text>
-        <Text style={styles.text}>2. Agenda setting ("what matters most today?")</Text>
-        <Text style={styles.text}>3. Guided intervention (interactive dialogue)</Text>
-        <Text style={styles.text}>4. Insight capture ("what did you learn?")</Text>
-        <Text style={styles.text}>5. Homework assignment</Text>
-        <Text style={styles.text}>6. Relapse prevention note</Text>
-
-        <View style={styles.buttonWrapper}>
-          <Button title="Complete Session" onPress={() => setActiveSession(null)} />
-        </View>
-      </View>
-    );
-  }
+  const [expandedPhase, setExpandedPhase] = useState(0);
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.header}>Your Calendarized Program</Text>
-      {SESSIONS.map((session) => (
-        <TouchableOpacity
-          key={session.id}
-          style={[styles.sessionCard, session.status === 'current' && styles.currentSessionCard]}
-          onPress={() => {
-            if (session.status === 'current') setActiveSession(session.id);
-          }}
-        >
-          <Text style={styles.sessionTitle}>{session.title}</Text>
-          <Text style={styles.sessionStatus}>
-            Status: {session.status.charAt(0).toUpperCase() + session.status.slice(1)}
-          </Text>
+    <ScreenContainer>
+      <View style={styles.headerRow}>
+        <View>
+          <Text style={styles.headerTitleItalic}>Therapeutic Journey</Text>
+          <Text style={styles.headerLabel}>HEALING ROOTS & TIDES</Text>
+        </View>
+        <TouchableOpacity style={styles.settingsBtn}>
+          <Text style={styles.settingsIcon}>⚙</Text>
         </TouchableOpacity>
+      </View>
+
+      <GlassCard variant="elevated" style={styles.progressCard}>
+        <View style={styles.progressRow}>
+          <View style={styles.progressIcon}>
+            <Text style={styles.progressIconText}>🌿</Text>
+          </View>
+          <View style={styles.progressInfo}>
+            <View style={styles.progressTitleRow}>
+              <Text style={styles.progressTitle}>The Sapling Stage</Text>
+              <Text style={styles.progressCount}>12 / 34 Modules</Text>
+            </View>
+            <View style={styles.progressBarContainer}>
+              <View style={[styles.progressBarFill, { width: '35%' }]} />
+            </View>
+            <Text style={styles.progressQuote}>Your progress is a circle, not a line.</Text>
+          </View>
+        </View>
+      </GlassCard>
+
+      {PHASES.map((phase, idx) => (
+        <View key={phase.title} style={styles.phaseSection}>
+          <TouchableOpacity
+            style={styles.phaseTitleRow}
+            onPress={() => setExpandedPhase(expandedPhase === idx ? -1 : idx)}
+          >
+            <View style={[styles.phaseDot, { backgroundColor: idx <= 1 ? colors.blue : colors.textMuted }]} />
+            <Text style={styles.phaseTitle}>{phase.title}</Text>
+          </TouchableOpacity>
+
+          {expandedPhase === idx && (
+            <View style={styles.phaseContent}>
+              <View style={styles.moduleGrid}>
+                {phase.modules.map((mod) => (
+                  <TouchableOpacity key={mod.title} style={styles.moduleCard}>
+                    <View style={[styles.moduleIconCircle, { borderColor: mod.color + '40' }]}>
+                      <Text style={styles.moduleIcon}>{mod.icon}</Text>
+                    </View>
+                    <Text style={styles.moduleTitle}>{mod.title}</Text>
+                    <View style={[styles.statusBadge, { backgroundColor: mod.color + '20' }]}>
+                      <Text style={[styles.statusText, { color: mod.color }]}>{mod.status}</Text>
+                    </View>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              {phase.featured && (
+                <GlassCard variant="default" style={styles.featuredCard}>
+                  <View style={styles.featuredRow}>
+                    <View style={styles.featuredIcon}>
+                      <Text style={{ fontSize: 20 }}>{phase.featured.icon}</Text>
+                    </View>
+                    <View style={styles.featuredInfo}>
+                      <Text style={styles.featuredTitle}>{phase.featured.title}</Text>
+                      <Text style={styles.featuredDesc}>{phase.featured.description}</Text>
+                    </View>
+                    <Text style={styles.featuredChevron}>›</Text>
+                  </View>
+                </GlassCard>
+              )}
+            </View>
+          )}
+        </View>
       ))}
-    </ScrollView>
+
+      <QuoteCard
+        quote='"Growth is quiet, measured in the depth of your foundations rather than the height of the sun."'
+      />
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 24,
+    paddingTop: 16,
+  },
+  headerTitleItalic: {
+    fontSize: 28,
+    fontWeight: '600',
+    fontStyle: 'italic',
+    color: colors.textPrimary,
+    marginBottom: 2,
+  },
+  headerLabel: {
+    ...typography.label,
+    color: colors.textMuted,
+  },
+  settingsBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.backgroundCard,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  settingsIcon: {
+    fontSize: 18,
+    color: colors.textSecondary,
+  },
+  progressCard: {
+    marginBottom: 24,
+  },
+  progressRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 14,
+  },
+  progressIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(76, 175, 80, 0.15)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  progressIconText: {
+    fontSize: 20,
+  },
+  progressInfo: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#f4f4f4',
   },
-  sessionContainer: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
+  progressTitleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
   },
-  header: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  text: {
+  progressTitle: {
+    ...typography.subtitle,
     fontSize: 16,
+  },
+  progressCount: {
+    ...typography.tag,
+    color: colors.blue,
+  },
+  progressBarContainer: {
+    height: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    borderRadius: 2,
+    marginBottom: 8,
+  },
+  progressBarFill: {
+    height: '100%',
+    backgroundColor: colors.blue,
+    borderRadius: 2,
+  },
+  progressQuote: {
+    ...typography.bodySmall,
+    fontStyle: 'italic',
+    color: colors.textMuted,
+    fontSize: 13,
+  },
+  phaseSection: {
+    marginBottom: 8,
+  },
+  phaseTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+  },
+  phaseDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: 12,
+  },
+  phaseTitle: {
+    ...typography.label,
+    fontSize: 13,
+    color: colors.textSecondary,
+  },
+  phaseContent: {
+    paddingLeft: 20,
+    marginBottom: 16,
+  },
+  moduleGrid: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 12,
+  },
+  moduleCard: {
+    flex: 1,
+    backgroundColor: colors.backgroundCard,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    padding: 16,
+    alignItems: 'center',
+  },
+  moduleIconCircle: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    borderWidth: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 10,
   },
-  sessionCard: {
-    backgroundColor: '#fff',
-    padding: 15,
-    borderRadius: 8,
-    marginBottom: 15,
-    borderLeftWidth: 5,
-    borderLeftColor: '#ccc',
+  moduleIcon: {
+    fontSize: 22,
   },
-  currentSessionCard: {
-    borderLeftColor: '#1e90ff',
+  moduleTitle: {
+    ...typography.bodySmall,
+    color: colors.textPrimary,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginBottom: 8,
   },
-  sessionTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
+  statusBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: radius.full,
   },
-  sessionStatus: {
-    marginTop: 5,
-    color: '#666',
+  statusText: {
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
-  buttonWrapper: {
-    marginTop: 20,
+  featuredCard: {
+    marginBottom: 0,
+  },
+  featuredRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  featuredIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  featuredInfo: {
+    flex: 1,
+  },
+  featuredTitle: {
+    ...typography.subtitle,
+    fontSize: 15,
+  },
+  featuredDesc: {
+    ...typography.bodySmall,
+    color: colors.textMuted,
+    marginTop: 2,
+  },
+  featuredChevron: {
+    fontSize: 24,
+    color: colors.textMuted,
+    marginLeft: 8,
   },
 });
