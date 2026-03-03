@@ -1,11 +1,21 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Share, Alert } from 'react-native';
+import { CompositeNavigationProp } from '@react-navigation/native';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList, MainTabParamList } from '../navigation/AppNavigator';
 import ScreenContainer from '../components/ScreenContainer';
 import GlassCard from '../components/GlassCard';
-import ActionButton from '../components/ActionButton';
 import SectionHeader from '../components/SectionHeader';
 import QuoteCard from '../components/QuoteCard';
 import { colors, radius, typography } from '../theme';
+import { useApp } from '../context/AppContext';
+
+type CircleNavigationProp = CompositeNavigationProp<
+  BottomTabNavigationProp<MainTabParamList, 'Circle'>,
+  NativeStackNavigationProp<RootStackParamList>
+>;
+type Props = { navigation: CircleNavigationProp };
 
 const RITUALS = [
   {
@@ -15,6 +25,7 @@ const RITUALS = [
     badgeColor: colors.green,
     buttonText: 'Begin Ritual',
     icon: '🌱',
+    screen: 'SeedRitual' as const,
   },
   {
     title: 'Writing an Unsent Letter',
@@ -24,6 +35,7 @@ const RITUALS = [
     buttonText: 'Start Writing',
     meta: '15-20 min',
     icon: '✉️',
+    screen: 'UnsentLetter' as const,
   },
   {
     title: 'Light a Digital Candle',
@@ -33,17 +45,43 @@ const RITUALS = [
     buttonText: 'Light Candle',
     meta: '4,281 candles lit today',
     icon: '🕯️',
+    screen: 'CandleRitual' as const,
   },
 ];
 
 const SCRIPTS = [
-  { title: 'Check in without pressure', preview: 'Hey, just thinking of you. No need to reply...' },
-  { title: 'Need distraction', preview: 'Having a rough moment. Could you tell me...' },
-  { title: 'Repair template', preview: 'I want to redo how I handled our last...' },
+  {
+    title: 'Check in without pressure',
+    preview: 'Hey, just thinking of you. No need to reply — I just wanted you to know I care.',
+    full: 'Hey, just thinking of you. No need to reply — I just wanted you to know I care. Grief can be so isolating and I want you to know you\'re not alone in this.',
+  },
+  {
+    title: 'Need distraction',
+    preview: 'Having a rough moment. Could you tell me something good that happened today?',
+    full: 'Having a rough moment. Could you tell me something good that happened today? I could really use a gentle distraction right now.',
+  },
+  {
+    title: 'Repair template',
+    preview: 'I want to redo how I handled our last conversation...',
+    full: 'I want to redo how I handled our last conversation. I was struggling and I didn\'t show up the way I wanted to. Can we try again?',
+  },
 ];
 
-export default function CircleScreen() {
+export default function CircleScreen({ navigation }: Props) {
+  const { candleCount, lightCandle } = useApp();
   const [activeTab, setActiveTab] = useState<'rituals' | 'connections'>('rituals');
+
+  const handleRitualPress = (screen: typeof RITUALS[0]['screen']) => {
+    navigation.navigate(screen as any);
+  };
+
+  const handleShareScript = async (script: typeof SCRIPTS[0]) => {
+    try {
+      await Share.share({ message: script.full, title: script.title });
+    } catch {
+      Alert.alert('Unable to share', 'Please try again.');
+    }
+  };
 
   return (
     <ScreenContainer>
@@ -104,7 +142,11 @@ export default function CircleScreen() {
                 {ritual.meta && (
                   <Text style={styles.ritualMeta}>⏱ {ritual.meta}</Text>
                 )}
-                <TouchableOpacity style={[styles.ritualButton, { backgroundColor: ritual.badgeColor }]}>
+                <TouchableOpacity
+                  style={[styles.ritualButton, { backgroundColor: ritual.badgeColor }]}
+                  onPress={() => handleRitualPress(ritual.screen)}
+                  activeOpacity={0.8}
+                >
                   <Text style={styles.ritualButtonText}>{ritual.buttonText}</Text>
                 </TouchableOpacity>
               </View>
@@ -118,7 +160,11 @@ export default function CircleScreen() {
             <GlassCard key={script.title} variant="default">
               <Text style={styles.scriptTitle}>{script.title}</Text>
               <Text style={styles.scriptPreview}>{script.preview}</Text>
-              <TouchableOpacity style={styles.useScriptBtn}>
+              <TouchableOpacity
+                style={styles.useScriptBtn}
+                onPress={() => handleShareScript(script)}
+                activeOpacity={0.7}
+              >
                 <Text style={styles.useScriptText}>Use Script →</Text>
               </TouchableOpacity>
             </GlassCard>
@@ -157,14 +203,8 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     marginBottom: 20,
   },
-  headerTitle: {
-    ...typography.title,
-    marginBottom: 2,
-  },
-  headerLabel: {
-    ...typography.label,
-    color: colors.coral,
-  },
+  headerTitle: { ...typography.title, marginBottom: 2 },
+  headerLabel: { ...typography.label, color: colors.coral },
   searchBtn: {
     width: 40,
     height: 40,
@@ -173,10 +213,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  searchIcon: {
-    fontSize: 20,
-    color: colors.textSecondary,
-  },
+  searchIcon: { fontSize: 20, color: colors.textSecondary },
   tabBar: {
     flexDirection: 'row',
     backgroundColor: colors.backgroundCard,
@@ -190,137 +227,59 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: radius.sm,
   },
-  tabActive: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  tabText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.textMuted,
-  },
-  tabTextActive: {
-    color: colors.textPrimary,
-  },
-  heroSection: {
-    marginBottom: 24,
-  },
-  heroTitle: {
-    fontSize: 30,
-    fontWeight: '700',
-    color: colors.textPrimary,
-  },
-  heroTitleAccent: {
-    fontSize: 30,
-    fontWeight: '700',
-    color: colors.coral,
-    marginBottom: 8,
-  },
-  heroSubtitle: {
-    ...typography.body,
-    color: colors.textSecondary,
-    lineHeight: 22,
-  },
-  ritualCard: {
-    padding: 0,
-    overflow: 'hidden',
-  },
+  tabActive: { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
+  tabText: { fontSize: 14, fontWeight: '600', color: colors.textMuted },
+  tabTextActive: { color: colors.textPrimary },
+  heroSection: { marginBottom: 24 },
+  heroTitle: { fontSize: 30, fontWeight: '700', color: colors.textPrimary },
+  heroTitleAccent: { fontSize: 30, fontWeight: '700', color: colors.coral, marginBottom: 8 },
+  heroSubtitle: { ...typography.body, color: colors.textSecondary, lineHeight: 22 },
+  ritualCard: { padding: 0, overflow: 'hidden' },
   ritualImagePlaceholder: {
     height: 120,
     backgroundColor: 'rgba(255, 255, 255, 0.03)',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  ritualImageIcon: {
-    fontSize: 48,
-  },
-  ritualContent: {
-    padding: 16,
-  },
+  ritualImageIcon: { fontSize: 48 },
+  ritualContent: { padding: 16 },
   ritualTitleRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 6,
   },
-  ritualTitle: {
-    ...typography.subtitle,
-    flex: 1,
-  },
-  ritualBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-    borderRadius: radius.full,
-  },
-  ritualBadgeText: {
-    fontSize: 10,
-    fontWeight: '700',
-    letterSpacing: 0.5,
-  },
-  ritualDescription: {
-    ...typography.bodySmall,
-    color: colors.textMuted,
-    marginBottom: 10,
-  },
-  ritualMeta: {
-    ...typography.tag,
-    color: colors.textMuted,
-    marginBottom: 12,
-  },
+  ritualTitle: { ...typography.subtitle, flex: 1 },
+  ritualBadge: { paddingHorizontal: 10, paddingVertical: 3, borderRadius: radius.full },
+  ritualBadgeText: { fontSize: 10, fontWeight: '700', letterSpacing: 0.5 },
+  ritualDescription: { ...typography.bodySmall, color: colors.textMuted, marginBottom: 10 },
+  ritualMeta: { ...typography.tag, color: colors.textMuted, marginBottom: 12 },
   ritualButton: {
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: radius.full,
     alignSelf: 'flex-end',
   },
-  ritualButtonText: {
-    ...typography.buttonText,
-    fontSize: 14,
-  },
-  scriptTitle: {
-    ...typography.subtitle,
-    fontSize: 16,
-    marginBottom: 4,
-  },
-  scriptPreview: {
-    ...typography.bodySmall,
-    color: colors.textMuted,
-    marginBottom: 10,
-  },
-  useScriptBtn: {
-    alignSelf: 'flex-end',
-  },
-  useScriptText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.coral,
-  },
+  ritualButtonText: { ...typography.buttonText, fontSize: 14 },
+  scriptTitle: { ...typography.subtitle, fontSize: 16, marginBottom: 4 },
+  scriptPreview: { ...typography.bodySmall, color: colors.textMuted, marginBottom: 10 },
+  useScriptBtn: { alignSelf: 'flex-end' },
+  useScriptText: { fontSize: 14, fontWeight: '600', color: colors.coral },
   escalationHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
     marginBottom: 10,
   },
-  escalationIcon: {
-    fontSize: 20,
-  },
-  escalationTitle: {
-    ...typography.subtitle,
-    fontSize: 16,
-  },
-  escalationDescription: {
-    ...typography.quote,
-    fontSize: 14,
-    marginBottom: 14,
-  },
+  escalationIcon: { fontSize: 20 },
+  escalationTitle: { ...typography.subtitle, fontSize: 16 },
+  escalationDescription: { ...typography.quote, fontSize: 14, marginBottom: 14 },
   escalationToggle: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  escalationStatus: {
-    ...typography.bodySmall,
-    color: colors.green,
-  },
+  escalationStatus: { ...typography.bodySmall, color: colors.green },
   toggleTrack: {
     width: 48,
     height: 26,

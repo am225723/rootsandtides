@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { colors } from '../theme';
+import { useApp } from '../context/AppContext';
 
 import IntakeScreen from '../screens/IntakeScreen';
 import EscalationScreen from '../screens/EscalationScreen';
@@ -13,11 +14,39 @@ import SessionsScreen from '../screens/SessionsScreen';
 import HomeworkScreen from '../screens/HomeworkScreen';
 import CircleScreen from '../screens/CircleScreen';
 import VaultScreen from '../screens/VaultScreen';
+import ProfileScreen from '../screens/ProfileScreen';
+import CheckInScreen from '../screens/CheckInScreen';
+import ModuleDetailScreen from '../screens/ModuleDetailScreen';
+import ModuleLibraryScreen from '../screens/ModuleLibraryScreen';
+import GroundingScreen from '../screens/GroundingScreen';
+import BreathingScreen from '../screens/BreathingScreen';
+import UnsentLetterScreen from '../screens/UnsentLetterScreen';
+import LegacyBuilderScreen from '../screens/LegacyBuilderScreen';
+import CollectionDetailScreen from '../screens/CollectionDetailScreen';
+import CandleRitualScreen from '../screens/CandleRitualScreen';
+import SeedRitualScreen from '../screens/SeedRitualScreen';
+import JournalScreen from '../screens/JournalScreen';
+import CopingPlanScreen from '../screens/CopingPlanScreen';
+import ResponsibilityPieScreen from '../screens/ResponsibilityPieScreen';
 
 export type RootStackParamList = {
   Intake: undefined;
   Main: undefined;
   Escalation: undefined;
+  Profile: undefined;
+  CheckIn: undefined;
+  ModuleDetail: { moduleId: string };
+  ModuleLibrary: undefined;
+  Grounding: undefined;
+  Breathing: undefined;
+  UnsentLetter: { collectionId?: string };
+  LegacyBuilder: { collectionId?: string };
+  CollectionDetail: { collectionId: string };
+  CandleRitual: undefined;
+  SeedRitual: undefined;
+  Journal: undefined;
+  CopingPlan: undefined;
+  ResponsibilityPie: undefined;
 };
 
 export type MainTabParamList = {
@@ -55,7 +84,6 @@ function TabBarBackground() {
   if (Platform.OS === 'web') {
     return <View style={styles.tabBarBackgroundWeb} />;
   }
-
   return <BlurView intensity={40} tint="dark" style={styles.tabBarBackgroundNative} />;
 }
 
@@ -85,16 +113,8 @@ function MainTabs() {
         tabBarIcon: ({ focused }) => <TabIcon name={route.name} focused={focused} />,
       })}
     >
-      <Tab.Screen
-        name="Home"
-        component={DashboardScreen}
-        options={{ tabBarLabel: 'Home' }}
-      />
-      <Tab.Screen
-        name="Journey"
-        component={SessionsScreen}
-        options={{ tabBarLabel: 'Journey' }}
-      />
+      <Tab.Screen name="Home" component={DashboardScreen} options={{ tabBarLabel: 'Home' }} />
+      <Tab.Screen name="Journey" component={SessionsScreen} options={{ tabBarLabel: 'Journey' }} />
       <Tab.Screen
         name="Stability"
         component={HomeworkScreen}
@@ -105,23 +125,18 @@ function MainTabs() {
           ),
         }}
       />
-      <Tab.Screen
-        name="Circle"
-        component={CircleScreen}
-        options={{ tabBarLabel: 'Circle' }}
-      />
-      <Tab.Screen
-        name="Vault"
-        component={VaultScreen}
-        options={{ tabBarLabel: 'Vault' }}
-      />
+      <Tab.Screen name="Circle" component={CircleScreen} options={{ tabBarLabel: 'Circle' }} />
+      <Tab.Screen name="Vault" component={VaultScreen} options={{ tabBarLabel: 'Vault' }} />
     </Tab.Navigator>
   );
 }
 
 export default function AppNavigator() {
+  const { onboardingDone } = useApp();
+
   return (
     <Stack.Navigator
+      initialRouteName={onboardingDone ? 'Main' : 'Intake'}
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: colors.background },
@@ -134,6 +149,24 @@ export default function AppNavigator() {
         component={EscalationScreen}
         options={{ presentation: 'modal' }}
       />
+      <Stack.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{ presentation: 'modal' }}
+      />
+      <Stack.Screen name="CheckIn" component={CheckInScreen} />
+      <Stack.Screen name="ModuleDetail" component={ModuleDetailScreen} />
+      <Stack.Screen name="ModuleLibrary" component={ModuleLibraryScreen} />
+      <Stack.Screen name="Grounding" component={GroundingScreen} />
+      <Stack.Screen name="Breathing" component={BreathingScreen} />
+      <Stack.Screen name="UnsentLetter" component={UnsentLetterScreen} />
+      <Stack.Screen name="LegacyBuilder" component={LegacyBuilderScreen} />
+      <Stack.Screen name="CollectionDetail" component={CollectionDetailScreen} />
+      <Stack.Screen name="CandleRitual" component={CandleRitualScreen} />
+      <Stack.Screen name="SeedRitual" component={SeedRitualScreen} />
+      <Stack.Screen name="Journal" component={JournalScreen} />
+      <Stack.Screen name="CopingPlan" component={CopingPlanScreen} />
+      <Stack.Screen name="ResponsibilityPie" component={ResponsibilityPieScreen} />
     </Stack.Navigator>
   );
 }
@@ -166,12 +199,10 @@ const styles = StyleSheet.create({
   tabBarBackgroundWeb: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(13, 17, 23, 0.55)',
-    // @ts-ignore react-native-web forwards this style key.
+    // @ts-ignore
     backdropFilter: 'blur(18px)',
   },
-  tabItem: {
-    paddingTop: 2,
-  },
+  tabItem: { paddingTop: 2 },
   tabLabel: {
     fontSize: 10,
     fontWeight: '600',
