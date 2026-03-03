@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, StyleSheet, ViewStyle } from 'react-native';
-import { colors, radius } from '../theme';
+import { View, StyleSheet, ViewStyle, Platform } from 'react-native';
+import { BlurView } from 'expo-blur';
+import { colors, radius, shadows } from '../theme';
 
 type Props = {
   children: React.ReactNode;
@@ -9,37 +10,44 @@ type Props = {
 };
 
 export default function GlassCard({ children, style, variant = 'default' }: Props) {
-  const variantStyles: Record<string, ViewStyle> = {
-    default: {
-      backgroundColor: colors.backgroundCard,
-      borderColor: colors.border,
-    },
-    warm: {
-      backgroundColor: 'rgba(196, 162, 101, 0.08)',
-      borderColor: 'rgba(196, 162, 101, 0.15)',
-    },
-    accent: {
-      backgroundColor: 'rgba(232, 116, 97, 0.08)',
-      borderColor: colors.borderAccent,
-    },
-    elevated: {
-      backgroundColor: colors.backgroundCardHover,
-      borderColor: colors.borderLight,
-    },
+  const variants: Record<string, ViewStyle> = {
+    default: { borderColor: colors.border },
+    warm: { borderColor: 'rgba(196, 162, 101, 0.20)' },
+    accent: { borderColor: colors.borderAccent },
+    elevated: { borderColor: colors.borderLight },
   };
+  const tint = variant === 'warm' ? 'light' : 'dark';
+  const intensity = variant === 'elevated' ? 55 : 38;
 
   return (
-    <View style={[styles.card, variantStyles[variant], style]}>
-      {children}
+    <View style={[styles.shell, variants[variant], style]}>
+      {Platform.OS === 'web' ? (
+        <View style={styles.webGlass}>{children}</View>
+      ) : (
+        <BlurView intensity={intensity} tint={tint} style={styles.blur}>
+          {children}
+        </BlurView>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  card: {
-    borderRadius: radius.lg,
+  shell: {
+    borderRadius: radius.xl,
     borderWidth: 1,
-    padding: 16,
+    overflow: 'hidden',
     marginBottom: 16,
+    ...shadows.card,
+  },
+  blur: {
+    padding: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+  },
+  webGlass: {
+    padding: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+    // @ts-ignore react-native-web forwards this style key.
+    backdropFilter: 'blur(14px)',
   },
 });

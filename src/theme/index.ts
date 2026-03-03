@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 export const colors = {
   background: '#0D1117',
@@ -44,6 +44,7 @@ export const spacing = {
   lg: 24,
   xl: 32,
   xxl: 48,
+  xxxl: 64,
 };
 
 export const radius = {
@@ -51,42 +52,53 @@ export const radius = {
   md: 12,
   lg: 16,
   xl: 20,
+  xxl: 28,
   full: 9999,
+};
+
+export const fonts = {
+  serif: Platform.select({ ios: 'Georgia', android: 'serif', default: 'serif' }),
+  sans: Platform.select({ ios: 'System', android: 'sans-serif', default: 'System' }),
 };
 
 export const typography = StyleSheet.create({
   heroTitle: {
-    fontSize: 32,
+    fontSize: 34,
     fontWeight: '700',
     color: colors.textPrimary,
-    letterSpacing: -0.5,
+    letterSpacing: -0.6,
+    fontFamily: fonts.sans,
   },
   heroTitleSerif: {
-    fontSize: 32,
+    fontSize: 34,
     fontWeight: '700',
     color: colors.textPrimary,
-    fontStyle: 'italic',
-    letterSpacing: -0.5,
+    letterSpacing: -0.6,
+    fontFamily: fonts.serif,
   },
   title: {
     fontSize: 24,
     fontWeight: '700',
     color: colors.textPrimary,
+    fontFamily: fonts.sans,
   },
   subtitle: {
     fontSize: 18,
     fontWeight: '600',
     color: colors.textPrimary,
+    fontFamily: fonts.sans,
   },
   body: {
     fontSize: 16,
     color: colors.textSecondary,
     lineHeight: 24,
+    fontFamily: fonts.sans,
   },
   bodySmall: {
     fontSize: 14,
     color: colors.textSecondary,
     lineHeight: 20,
+    fontFamily: fonts.sans,
   },
   label: {
     fontSize: 11,
@@ -94,22 +106,26 @@ export const typography = StyleSheet.create({
     color: colors.textMuted,
     letterSpacing: 1.5,
     textTransform: 'uppercase',
+    fontFamily: fonts.sans,
   },
   quote: {
     fontSize: 16,
     fontStyle: 'italic',
     color: colors.textWarm,
     lineHeight: 24,
+    fontFamily: fonts.serif,
   },
   buttonText: {
     fontSize: 16,
     fontWeight: '700',
     color: colors.textPrimary,
+    fontFamily: fonts.sans,
   },
   tag: {
     fontSize: 12,
     fontWeight: '600',
     color: colors.textMuted,
+    fontFamily: fonts.sans,
   },
 });
 

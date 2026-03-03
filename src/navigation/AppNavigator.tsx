@@ -1,7 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Ionicons } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
 import { colors } from '../theme';
 
 import IntakeScreen from '../screens/IntakeScreen';
@@ -29,31 +31,40 @@ export type MainTabParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
+type TabIconName = React.ComponentProps<typeof Ionicons>['name'];
+
 function TabIcon({ name, focused }: { name: string; focused: boolean }) {
-  const icons: Record<string, string> = {
-    Home: '⌂',
-    Journey: '⟡',
-    Stability: '⚓',
-    Circle: '❋',
-    Vault: '▣',
+  const iconMap: Record<string, TabIconName> = {
+    Home: focused ? 'home' : 'home-outline',
+    Journey: focused ? 'compass' : 'compass-outline',
+    Stability: focused ? 'aperture' : 'aperture-outline',
+    Circle: focused ? 'chatbubbles' : 'chatbubbles-outline',
+    Vault: focused ? 'albums' : 'albums-outline',
   };
 
   return (
-    <Text style={[
-      styles.tabIcon,
-      { color: focused ? colors.tabActive : colors.tabInactive }
-    ]}>
-      {icons[name] || '○'}
-    </Text>
+    <Ionicons
+      name={iconMap[name] ?? 'ellipse-outline'}
+      size={22}
+      color={focused ? colors.tabActive : colors.tabInactive}
+    />
   );
 }
 
-function AnchorButton({ onPress }: { onPress: () => void }) {
+function TabBarBackground() {
+  if (Platform.OS === 'web') {
+    return <View style={styles.tabBarBackgroundWeb} />;
+  }
+
+  return <BlurView intensity={40} tint="dark" style={styles.tabBarBackgroundNative} />;
+}
+
+function AnchorButton({ onPress }: { onPress?: () => void }) {
   return (
     <TouchableOpacity style={styles.anchorButton} onPress={onPress} activeOpacity={0.8}>
       <View style={styles.anchorOuter}>
         <View style={styles.anchorInner}>
-          <Text style={styles.anchorIcon}>⚓</Text>
+          <Ionicons name="mic" size={24} color="#FFFFFF" />
         </View>
       </View>
     </TouchableOpacity>
@@ -66,9 +77,11 @@ function MainTabs() {
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarStyle: styles.tabBar,
+        tabBarBackground: () => <TabBarBackground />,
         tabBarActiveTintColor: colors.tabActive,
         tabBarInactiveTintColor: colors.tabInactive,
         tabBarLabelStyle: styles.tabLabel,
+        tabBarItemStyle: styles.tabItem,
         tabBarIcon: ({ focused }) => <TabIcon name={route.name} focused={focused} />,
       })}
     >
@@ -88,7 +101,7 @@ function MainTabs() {
         options={{
           tabBarLabel: 'Stability',
           tabBarButton: (props) => (
-            <AnchorButton onPress={() => props.onPress?.({} as any)} />
+            <AnchorButton onPress={props.onPress as (() => void) | undefined} />
           ),
         }}
       />
@@ -127,52 +140,71 @@ export default function AppNavigator() {
 
 const styles = StyleSheet.create({
   tabBar: {
-    backgroundColor: 'rgba(13, 17, 23, 0.95)',
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    height: 80,
-    paddingBottom: 16,
-    paddingTop: 8,
     position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
+    left: 16,
+    right: 16,
+    bottom: 16,
+    height: 74,
+    borderRadius: 22,
+    borderTopWidth: 0,
+    borderWidth: 1,
+    borderColor: colors.border,
+    overflow: 'hidden',
+    backgroundColor: 'rgba(13, 17, 23, 0.55)',
+    shadowColor: '#000',
+    shadowOpacity: 0.45,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 18,
+    paddingTop: 10,
+    paddingBottom: Platform.OS === 'ios' ? 14 : 10,
+  },
+  tabBarBackgroundNative: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(13, 17, 23, 0.40)',
+  },
+  tabBarBackgroundWeb: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(13, 17, 23, 0.55)',
+    // @ts-ignore react-native-web forwards this style key.
+    backdropFilter: 'blur(18px)',
+  },
+  tabItem: {
+    paddingTop: 2,
   },
   tabLabel: {
     fontSize: 10,
     fontWeight: '600',
     letterSpacing: 0.5,
     textTransform: 'uppercase',
-    marginTop: 2,
-  },
-  tabIcon: {
-    fontSize: 22,
+    marginBottom: 2,
   },
   anchorButton: {
-    top: -20,
+    top: -24,
     justifyContent: 'center',
     alignItems: 'center',
   },
   anchorOuter: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+    width: 68,
+    height: 68,
+    borderRadius: 34,
     backgroundColor: colors.anchorGlow,
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: colors.anchorRed,
+    shadowOpacity: 0.35,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 16,
   },
   anchorInner: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     backgroundColor: colors.anchorRed,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
     borderColor: 'rgba(255, 255, 255, 0.2)',
-  },
-  anchorIcon: {
-    fontSize: 24,
-    color: '#FFFFFF',
   },
 });
