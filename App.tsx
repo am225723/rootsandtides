@@ -1,5 +1,8 @@
+import React from 'react';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+import { AppProvider, useApp } from './src/context/AppContext';
 import AppNavigator from './src/navigation/AppNavigator';
+import LoadingScreen from './src/components/LoadingScreen';
 
 const DarkTheme = {
   ...DefaultTheme,
@@ -15,10 +18,18 @@ const DarkTheme = {
   },
 };
 
+function RootNavigator() {
+  const { isLoading } = useApp();
+  if (isLoading) return <LoadingScreen />;
+  return <AppNavigator />;
+}
+
 export default function App() {
   return (
-    <NavigationContainer theme={DarkTheme}>
-      <AppNavigator />
-    </NavigationContainer>
+    <AppProvider>
+      <NavigationContainer theme={DarkTheme}>
+        <RootNavigator />
+      </NavigationContainer>
+    </AppProvider>
   );
 }
