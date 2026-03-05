@@ -5,24 +5,25 @@ import { Ionicons } from '@expo/vector-icons';
 import { colors, radius, typography, shadows, animation } from '../theme';
 
 interface GradientButtonProps {
-  title: string;
+  title?: string;
   onPress: () => void;
   variant?: 'primary' | 'secondary' | 'anchor' | 'success' | 'blue';
-  icon?: keyof typeof Ionicons.glyphMap;
+  icon?: keyof typeof Ionicons.glyphMap | string;
   iconPosition?: 'left' | 'right';
   size?: 'small' | 'medium' | 'large';
   disabled?: boolean;
   style?: ViewStyle;
   textStyle?: TextStyle;
   fullWidth?: boolean;
+  children?: React.ReactNode;
 }
 
-const gradients = {
-  primary: ['#E87461', '#C85A4A'],
-  secondary: ['#374151', '#1F2937'],
-  anchor: ['#EF4444', '#DC2626'],
-  success: ['#4CAF50', '#388E3C'],
-  blue: ['#3B82F6', '#2563EB'],
+const gradients: Record<string, readonly [string, string]> = {
+  primary: ['#E87461', '#C85A4A'] as const,
+  secondary: ['#374151', '#1F2937'] as const,
+  anchor: ['#EF4444', '#DC2626'] as const,
+  success: ['#4CAF50', '#388E3C'] as const,
+  blue: ['#3B82F6', '#2563EB'] as const,
 };
 
 export default function GradientButton({
@@ -30,12 +31,13 @@ export default function GradientButton({
   onPress,
   variant = 'primary',
   icon,
-  iconPosition = 'right',
+  iconPosition = 'left',
   size = 'medium',
   disabled = false,
   style,
   textStyle,
-  fullWidth = false,
+  fullWidth = true,
+  children,
 }: GradientButtonProps) {
   const getSizeStyles = (): { height: number; padding: number; fontSize: number } => {
     switch (size) {
@@ -50,6 +52,28 @@ export default function GradientButton({
 
   const { height, padding, fontSize } = getSizeStyles();
 
+  // Check if icon is an Ionicon name or an emoji string
+  const isIonicon = icon && typeof icon === 'string' && icon.includes('-');
+
+  const renderIcon = (position: 'left' | 'right') => {
+    if (!icon) return null;
+    if (isIonicon) {
+      return (
+        <Ionicons 
+          name={icon as keyof typeof Ionicons.glyphMap} 
+          size={fontSize + 4} 
+          color="#FFFFFF" 
+          style={position === 'left' ? styles.iconLeft : styles.iconRight}
+        />
+      );
+    }
+    return (
+      <Text style={styles.emojiIcon}>{icon}</Text>
+    );
+  };
+
+  const content = children || (title && <Text style={[styles.text, { fontSize }, textStyle]}>{title}</Text>);
+
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -57,7 +81,7 @@ export default function GradientButton({
       activeOpacity={0.8}
       style={[
         styles.container,
-        { height, width: fullWidth ? '100%' : undefined },
+        { minHeight: height, width: fullWidth ? '100%' : undefined },
         style,
       ]}
     >
@@ -71,31 +95,9 @@ export default function GradientButton({
         ]}
       >
         <View style={[styles.content, { paddingHorizontal: padding }]}>
-          {icon && iconPosition === 'left' && (
-            <Ionicons 
-              name={icon} 
-              size={fontSize + 4} 
-              color="#FFFFFF" 
-              style={styles.iconLeft}
-            />
-          )}
-          <Text 
-            style={[
-              styles.text,
-              { fontSize },
-              textStyle,
-            ]}
-          >
-            {title}
-          </Text>
-          {icon && iconPosition === 'right' && (
-            <Ionicons 
-              name={icon} 
-              size={fontSize + 4} 
-              color="#FFFFFF" 
-              style={styles.iconRight}
-            />
-          )}
+          {icon && iconPosition === 'left' && renderIcon('left')}
+          {content}
+          {icon && iconPosition === 'right' && renderIcon('right')}
         </View>
       </LinearGradient>
     </TouchableOpacity>
@@ -104,7 +106,7 @@ export default function GradientButton({
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: radius.full,
+    borderRadius: radius.lg,
     overflow: 'hidden',
     ...shadows.softGlow('#E87461'),
   },
@@ -112,6 +114,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingVertical: 12,
   },
   disabled: {
     opacity: 0.5,
@@ -121,11 +124,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
+    flexWrap: 'wrap',
   },
   text: {
     ...typography.buttonText,
     color: '#FFFFFF',
     fontWeight: '700',
+  },
+  emojiIcon: {
+    fontSize: 20,
+    marginRight: 8,
   },
   iconLeft: {
     marginRight: 4,

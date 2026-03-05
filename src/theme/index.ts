@@ -68,27 +68,27 @@ export const colors = {
   // Mood/Weather Colors (Gradient Endpoints)
   mood: {
     stormy: {
-      gradient: ['#374151', '#1F2937'],
+      gradient: ['#374151', '#1F2937'] as readonly [string, string],
       icon: '#6B7280',
       glow: 'rgba(107, 114, 128, 0.4)',
     },
     rainy: {
-      gradient: ['#2563EB', '#1D4ED8'],
+      gradient: ['#2563EB', '#1D4ED8'] as readonly [string, string],
       icon: '#60A5FA',
       glow: 'rgba(37, 99, 235, 0.4)',
     },
     cloudy: {
-      gradient: ['#64748B', '#475569'],
+      gradient: ['#64748B', '#475569'] as readonly [string, string],
       icon: '#94A3B8',
       glow: 'rgba(100, 116, 139, 0.4)',
     },
     partly: {
-      gradient: ['#D4A373', '#A98467'],
+      gradient: ['#D4A373', '#A98467'] as readonly [string, string],
       icon: '#E8C89E',
       glow: 'rgba(212, 163, 115, 0.4)',
     },
     sunny: {
-      gradient: ['#FBBF24', '#F59E0B'],
+      gradient: ['#FBBF24', '#F59E0B'] as readonly [string, string],
       icon: '#FCD34D',
       glow: 'rgba(251, 191, 36, 0.4)',
     },

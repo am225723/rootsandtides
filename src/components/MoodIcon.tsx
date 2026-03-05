@@ -15,35 +15,35 @@ interface MoodIconProps {
 
 const moodConfig = {
   stormy: {
-    gradient: colors.mood.stormy.gradient,
+    gradient: ['#374151', '#1F2937'] as const,
     icon: 'thunderstorm' as const,
     iconColor: colors.mood.stormy.icon,
     glow: colors.mood.stormy.glow,
     label: 'Stormy',
   },
   rainy: {
-    gradient: colors.mood.rainy.gradient,
-    icon: 'water-drop' as const,
+    gradient: ['#2563EB', '#1D4ED8'] as const,
+    icon: 'rainy' as const,
     iconColor: colors.mood.rainy.icon,
     glow: colors.mood.rainy.glow,
     label: 'Rainy',
   },
   cloudy: {
-    gradient: colors.mood.cloudy.gradient,
+    gradient: ['#64748B', '#475569'] as const,
     icon: 'cloud' as const,
     iconColor: colors.mood.cloudy.icon,
     glow: colors.mood.cloudy.glow,
     label: 'Cloudy',
   },
   partly: {
-    gradient: colors.mood.partly.gradient,
+    gradient: ['#D4A373', '#A98467'] as const,
     icon: 'partly-sunny' as const,
     iconColor: colors.mood.partly.icon,
     glow: colors.mood.partly.glow,
     label: 'Partly',
   },
   sunny: {
-    gradient: colors.mood.sunny.gradient,
+    gradient: ['#FBBF24', '#F59E0B'] as const,
     icon: 'sunny' as const,
     iconColor: colors.mood.sunny.icon,
     glow: colors.mood.sunny.glow,
