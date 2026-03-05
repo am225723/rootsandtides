@@ -35,6 +35,13 @@ export const colors = {
 
   tabActive: '#E87461',
   tabInactive: '#6B7280',
+
+  // Additional colors for new features
+  primary: '#E87461',
+  success: '#4CAF50',
+  warning: '#C4A265',
+  text: '#FFFFFF',
+  card: 'rgba(255, 255, 255, 0.06)',
 };
 
 export const spacing = {

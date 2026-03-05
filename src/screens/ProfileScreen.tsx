@@ -87,6 +87,21 @@ export default function ProfileScreen({ navigation }: Props) {
           </View>
         </GlassCard>
 
+        <GlassCard variant="default">
+          <Text style={styles.sectionLabel}>FEATURES</Text>
+          <TouchableOpacity style={styles.featureRow} onPress={() => navigation.navigate('DailyPrompt' as any)}>
+            <Text style={styles.featureIcon}>✨</Text>
+            <View style={{ flex: 1 }}><Text style={styles.featureTitle}>Daily Reflection Prompts</Text><Text style={styles.featureSub}>Personalized prompts for your journey</Text></View>
+            <Text style={styles.chevron}>›</Text>
+          </TouchableOpacity>
+          <View style={styles.divider} />
+          <TouchableOpacity style={styles.featureRow} onPress={() => navigation.navigate('TherapistConnection' as any)}>
+            <Text style={styles.featureIcon}>👥</Text>
+            <View style={{ flex: 1 }}><Text style={styles.featureTitle}>Therapist Connection</Text><Text style={styles.featureSub}>Share progress with your therapist</Text></View>
+            <Text style={styles.chevron}>›</Text>
+          </TouchableOpacity>
+        </GlassCard>
+
         <GlassCard variant="accent">
           <Text style={styles.sectionLabel}>ACCOUNT</Text>
           <TouchableOpacity style={styles.dangerRow} onPress={handleResetOnboarding}>
@@ -130,5 +145,9 @@ const styles = StyleSheet.create({
   dangerIcon: { fontSize: 20 },
   dangerTitle: { ...typography.bodySmall, color: colors.textPrimary, fontWeight: '600' },
   dangerSub: { ...typography.bodySmall, color: colors.textMuted, fontSize: 12 },
+  featureRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  featureIcon: { fontSize: 20 },
+  featureTitle: { ...typography.bodySmall, color: colors.textPrimary, fontWeight: '600' },
+  featureSub: { ...typography.bodySmall, color: colors.textMuted, fontSize: 12 },
   chevron: { fontSize: 22, color: colors.textMuted },
 });

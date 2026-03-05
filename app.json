@@ -1,22 +1,27 @@
 {
   "expo": {
-    "name": "app",
-    "slug": "app",
+    "name": "Roots & Tides",
+    "slug": "rootsandtides",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "dark",
+    "scheme": "rootsandtides",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#0d1117"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.rootsandtides.app",
+      "buildNumber": "1"
     },
     "android": {
+      "package": "com.rootsandtides.app",
+      "versionCode": 1,
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#0d1117",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -24,7 +29,23 @@
       "predictiveBackGestureEnabled": false
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "output": "single",
+      "name": "Roots & Tides - Grief Support",
+      "shortName": "Roots & Tides",
+      "description": "A compassionate grief support application for your healing journey",
+      "themeColor": "#0d1117",
+      "backgroundColor": "#0d1117"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "rootsandtides"
+      }
     }
   }
 }
