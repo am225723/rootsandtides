@@ -53,6 +53,14 @@ export default function AudioSessionScreen({ navigation }: Props) {
 
   return (
     <ScreenContainer>
+      <View style={styles.header}>
+        <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
+          <Text style={styles.backIcon}>←</Text>
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Wave Rider</Text>
+        <View style={styles.placeholder} />
+      </View>
+
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Text style={styles.badge}>Guided Session</Text>
         <Text style={styles.title}>{session.title}</Text>
@@ -124,6 +132,33 @@ export default function AudioSessionScreen({ navigation }: Props) {
 }
 
 const styles = StyleSheet.create({
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingTop: 56,
+    paddingHorizontal: 20,
+    marginBottom: 16,
+  },
+  backBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  backIcon: {
+    color: colors.textPrimary,
+    fontSize: 18,
+  },
+  headerTitle: {
+    ...typography.subtitle,
+    fontSize: 17,
+  },
+  placeholder: {
+    width: 36,
+  },
   scrollContent: {
     padding: 20,
   },
