@@ -1,7 +1,9 @@
 {
+  "github": {
+    "silent": true
+  },
   "buildCommand": "expo export:web",
-  "devCommand": "expo start --web",
   "installCommand": "npm install",
-  "framework": null,
-  "outputDirectory": "dist"
+  "outputDirectory": "dist",
+  "framework": null
 }
