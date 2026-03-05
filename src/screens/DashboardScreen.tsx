@@ -65,14 +65,19 @@ export default function DashboardScreen({ navigation }: Props) {
             </TouchableOpacity>
           ))}
         </View>
-        <TouchableOpacity style={styles.fullCheckInBtn} onPress={() => navigation.navigate('CheckIn')}>
-          <Text style={styles.fullCheckInText}>Full Check-in →</Text>
-        </TouchableOpacity>
+        <View style={styles.checkInActions}>
+          <TouchableOpacity style={styles.fullCheckInBtn} onPress={() => navigation.navigate('CheckIn')}>
+            <Text style={styles.fullCheckInText}>Full Check-in →</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.historyBtn} onPress={() => navigation.navigate('MoodHistory' as never)}>
+            <Text style={styles.historyBtnText}>View History</Text>
+          </TouchableOpacity>
+        </View>
       </GlassCard>
 
       <SectionHeader title="Recommended for you" actionText="View all" onAction={() => navigation.navigate('Journey')} />
 
-      <TouchableOpacity activeOpacity={0.85} onPress={() => navigation.navigate('Breathing')}>
+      <TouchableOpacity activeOpacity={0.85} onPress={() => navigation.navigate('AudioSession' as never)}>
         <GlassCard variant="default">
           <View style={styles.audioBadge}><Text style={styles.audioBadgeText}>AUDIO</Text></View>
           <View style={styles.audioContent}>
@@ -127,8 +132,11 @@ const styles = StyleSheet.create({
   moodButton: { alignItems: 'center', padding: 8, borderRadius: radius.md, minWidth: 56 },
   moodIcon: { fontSize: 28, marginBottom: 6 },
   moodLabel: { fontSize: 11, fontWeight: '600', color: colors.textMuted, textTransform: 'uppercase' },
-  fullCheckInBtn: { marginTop: 12, alignItems: 'center', paddingVertical: 8, borderTopWidth: 1, borderTopColor: colors.border },
+  checkInActions: { marginTop: 12, flexDirection: 'row', gap: 8 },
+  fullCheckInBtn: { flex: 1, alignItems: 'center', paddingVertical: 8, borderTopWidth: 1, borderTopColor: colors.border },
   fullCheckInText: { fontSize: 13, fontWeight: '600', color: colors.coral },
+  historyBtn: { flex: 1, alignItems: 'center', paddingVertical: 8, borderLeftWidth: 1, borderLeftColor: colors.border },
+  historyBtnText: { fontSize: 13, fontWeight: '600', color: colors.textMuted },
   audioBadge: { position: 'absolute', top: 12, left: 12, backgroundColor: 'rgba(0,0,0,0.5)', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 4, zIndex: 1 },
   audioBadgeText: { fontSize: 10, fontWeight: '700', color: colors.textPrimary, letterSpacing: 1 },
   audioContent: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(74,144,217,0.1)', borderRadius: radius.md, padding: 16, marginBottom: 12, height: 80 },
