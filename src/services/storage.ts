@@ -46,4 +46,9 @@ export const STORAGE_KEYS = {
   CANDLE_COUNT: 'rt_candle_count',
   ONBOARDING_DONE: 'rt_onboarding_done',
   CAPACITY_LEVEL: 'rt_capacity_level',
+  THERAPIST_CONNECTIONS: 'rt_therapist_connections',
+  DATA_ACCESS_LOGS: 'rt_data_access_logs',
+  PROGRESS_REPORTS: 'rt_progress_reports',
+  PROMPT_RESPONSES: 'rt_prompt_responses',
+  PROMPT_PREFERENCES: 'rt_prompt_preferences',
 } as const;

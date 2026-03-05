@@ -30,6 +30,9 @@ import CopingPlanScreen from '../screens/CopingPlanScreen';
 import ResponsibilityPieScreen from '../screens/ResponsibilityPieScreen';
 import AudioSessionScreen from '../screens/AudioSessionScreen';
 import MoodHistoryScreen from '../screens/MoodHistoryScreen';
+import DailyPromptScreen from '../screens/DailyPromptScreen';
+import TherapistConnectionScreen from '../screens/TherapistConnectionScreen';
+import ProgressReportScreen from '../screens/ProgressReportScreen';
 
 export type RootStackParamList = {
   Intake: undefined;
@@ -51,6 +54,9 @@ export type RootStackParamList = {
   ResponsibilityPie: undefined;
   AudioSession: undefined;
   MoodHistory: undefined;
+  DailyPrompt: undefined;
+  TherapistConnection: undefined;
+  ProgressReport: { connectionId?: string; therapistName?: string };
 };
 
 export type MainTabParamList = {
@@ -173,6 +179,9 @@ export default function AppNavigator() {
       <Stack.Screen name="ResponsibilityPie" component={ResponsibilityPieScreen} />
       <Stack.Screen name="AudioSession" component={AudioSessionScreen} />
       <Stack.Screen name="MoodHistory" component={MoodHistoryScreen} />
+      <Stack.Screen name="DailyPrompt" component={DailyPromptScreen} />
+      <Stack.Screen name="TherapistConnection" component={TherapistConnectionScreen} />
+      <Stack.Screen name="ProgressReport" component={ProgressReportScreen} />
     </Stack.Navigator>
   );
 }
