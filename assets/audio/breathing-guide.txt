@@ -1,0 +1,15 @@
+PLACEHOLDER AUDIO FILE
+
+This is a placeholder for the breathing guide audio.
+Replace this with an actual MP3 file named breathing-guide.mp3
+
+Recommended: 3-minute guided breathing meditation with:
+- Calm, soothing voice
+- Gentle background ambient sounds (ocean waves, rain)
+- Clear breathing instructions
+- Supportive, grounding language
+
+File should be: breathing-guide.mp3
+Duration: ~3 minutes (180 seconds)
+Format: MP3
+Bitrate: 128kbps or higher

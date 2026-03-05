@@ -56,12 +56,14 @@ export default function EscalationScreen({ navigation }: Props) {
             </View>
           </GlassCard>
         </TouchableOpacity>
-        <View style={styles.waveCard}>
-          <View style={styles.waveContent}>
-            <View style={styles.wavePlayBtn}><Text style={styles.wavePlayIcon}>▶</Text></View>
-            <View><Text style={styles.waveTitle}>Wave Riders</Text><Text style={styles.waveLabel}>GUIDED AUDIO SUPPORT</Text></View>
+        <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('AudioSession' as never)}>
+          <View style={styles.waveCard}>
+            <View style={styles.waveContent}>
+              <View style={styles.wavePlayBtn}><Text style={styles.wavePlayIcon}>▶</Text></View>
+              <View><Text style={styles.waveTitle}>Wave Riders</Text><Text style={styles.waveLabel}>GUIDED AUDIO SUPPORT</Text></View>
+            </View>
           </View>
-        </View>
+        </TouchableOpacity>
         <ActionButton title="⚠  GET IMMEDIATE HELP" onPress={() => setShowCrisisModal(true)} variant="danger" style={styles.emergencyButton} />
       </View>
       <Modal visible={showCrisisModal} transparent animationType="slide" onRequestClose={() => setShowCrisisModal(false)}>

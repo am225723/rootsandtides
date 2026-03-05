@@ -28,6 +28,8 @@ import SeedRitualScreen from '../screens/SeedRitualScreen';
 import JournalScreen from '../screens/JournalScreen';
 import CopingPlanScreen from '../screens/CopingPlanScreen';
 import ResponsibilityPieScreen from '../screens/ResponsibilityPieScreen';
+import AudioSessionScreen from '../screens/AudioSessionScreen';
+import MoodHistoryScreen from '../screens/MoodHistoryScreen';
 
 export type RootStackParamList = {
   Intake: undefined;
@@ -47,6 +49,8 @@ export type RootStackParamList = {
   Journal: undefined;
   CopingPlan: undefined;
   ResponsibilityPie: undefined;
+  AudioSession: undefined;
+  MoodHistory: undefined;
 };
 
 export type MainTabParamList = {
@@ -167,6 +171,8 @@ export default function AppNavigator() {
       <Stack.Screen name="Journal" component={JournalScreen} />
       <Stack.Screen name="CopingPlan" component={CopingPlanScreen} />
       <Stack.Screen name="ResponsibilityPie" component={ResponsibilityPieScreen} />
+      <Stack.Screen name="AudioSession" component={AudioSessionScreen} />
+      <Stack.Screen name="MoodHistory" component={MoodHistoryScreen} />
     </Stack.Navigator>
   );
 }
