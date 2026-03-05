@@ -1,6 +1,12 @@
 import { Platform, StyleSheet } from 'react-native';
 
+// ============================================
+// ROOTS & TIDES DESIGN SYSTEM
+// ============================================
+
+// Color System - Updated to match Stitch design reference
 export const colors = {
+  // Background Colors
   background: '#0D1117',
   backgroundDark: '#080C12',
   backgroundCard: 'rgba(255, 255, 255, 0.06)',
@@ -8,35 +14,95 @@ export const colors = {
   backgroundOverlay: 'rgba(0, 0, 0, 0.5)',
   backgroundWarm: '#1A1210',
   backgroundGreen: '#0A1A0A',
+  
+  // New Background System (from Stitch)
+  surface: {
+    dark: '#11161F',
+    card: '#1C2333',
+    elevated: '#162030',
+    light: '#f6f6f8',
+    primary: '#FFFFFF',
+  },
 
+  // Primary Accent Colors
   coral: '#E87461',
   coralDark: '#C85A4A',
-  red: '#DC143C',
-  redSoft: 'rgba(220, 20, 60, 0.15)',
+  coralGlow: 'rgba(232, 116, 97, 0.3)',
+  
+  // Anchor Red (SOS/Emergency)
+  anchorRed: '#EF4444',
+  anchorGlow: 'rgba(239, 68, 68, 0.4)',
+  
+  // Blue Accent
   blue: '#4A90D9',
   blueSoft: 'rgba(74, 144, 217, 0.15)',
+  accentBlue: '#3B82F6',
+  blueGlow: 'rgba(59, 130, 246, 0.3)',
+  
+  // Semantic Colors
+  red: '#DC143C',
+  redSoft: 'rgba(220, 20, 60, 0.15)',
   green: '#4CAF50',
   greenSoft: 'rgba(76, 175, 80, 0.15)',
   gold: '#C4A265',
   goldSoft: 'rgba(196, 162, 101, 0.15)',
   purple: '#8B5CF6',
+  purpleSoft: 'rgba(139, 92, 246, 0.15)',
 
+  // Text Colors
   textPrimary: '#FFFFFF',
   textSecondary: '#A0A0B0',
   textMuted: '#6B7280',
   textWarm: '#D4C5B0',
+  textDark: '#1F2937',
 
+  // Border Colors
   border: 'rgba(255, 255, 255, 0.08)',
   borderLight: 'rgba(255, 255, 255, 0.15)',
   borderAccent: 'rgba(232, 116, 97, 0.3)',
 
-  anchorRed: '#DC143C',
-  anchorGlow: 'rgba(220, 20, 60, 0.3)',
-
+  // Tab Bar Colors
   tabActive: '#E87461',
   tabInactive: '#6B7280',
 
-  // Additional colors for new features
+  // Mood/Weather Colors (Gradient Endpoints)
+  mood: {
+    stormy: {
+      gradient: ['#374151', '#1F2937'] as readonly [string, string],
+      icon: '#6B7280',
+      glow: 'rgba(107, 114, 128, 0.4)',
+    },
+    rainy: {
+      gradient: ['#2563EB', '#1D4ED8'] as readonly [string, string],
+      icon: '#60A5FA',
+      glow: 'rgba(37, 99, 235, 0.4)',
+    },
+    cloudy: {
+      gradient: ['#64748B', '#475569'] as readonly [string, string],
+      icon: '#94A3B8',
+      glow: 'rgba(100, 116, 139, 0.4)',
+    },
+    partly: {
+      gradient: ['#D4A373', '#A98467'] as readonly [string, string],
+      icon: '#E8C89E',
+      glow: 'rgba(212, 163, 115, 0.4)',
+    },
+    sunny: {
+      gradient: ['#FBBF24', '#F59E0B'] as readonly [string, string],
+      icon: '#FCD34D',
+      glow: 'rgba(251, 191, 36, 0.4)',
+    },
+  },
+
+  // Module Stage Colors
+  stage: {
+    sapling: '#8B5CF6',    // Purple
+    rawEdge: '#6366F1',    // Indigo
+    messyMiddle: '#EC4899', // Pink
+    growth: '#10B981',     // Emerald
+  },
+
+  // Additional colors for compatibility
   primary: '#E87461',
   success: '#4CAF50',
   warning: '#C4A265',
@@ -44,6 +110,9 @@ export const colors = {
   card: 'rgba(255, 255, 255, 0.06)',
 };
 
+// ============================================
+// SPACING SYSTEM
+// ============================================
 export const spacing = {
   xs: 4,
   sm: 8,
@@ -54,6 +123,9 @@ export const spacing = {
   xxxl: 64,
 };
 
+// ============================================
+// BORDER RADIUS SYSTEM
+// ============================================
 export const radius = {
   sm: 8,
   md: 12,
@@ -63,12 +135,29 @@ export const radius = {
   full: 9999,
 };
 
+// ============================================
+// TYPOGRAPHY SYSTEM
+// ============================================
 export const fonts = {
-  serif: Platform.select({ ios: 'Georgia', android: 'serif', default: 'serif' }),
-  sans: Platform.select({ ios: 'System', android: 'sans-serif', default: 'System' }),
+  serif: Platform.select({ 
+    ios: 'Georgia', 
+    android: 'serif', 
+    default: 'serif' 
+  }),
+  sans: Platform.select({ 
+    ios: 'System', 
+    android: 'sans-serif', 
+    default: 'System' 
+  }),
+  display: Platform.select({ 
+    ios: 'System', 
+    android: 'sans-serif-medium', 
+    default: 'System' 
+  }),
 };
 
 export const typography = StyleSheet.create({
+  // Display/Hero Typography
   heroTitle: {
     fontSize: 34,
     fontWeight: '700',
@@ -83,6 +172,8 @@ export const typography = StyleSheet.create({
     letterSpacing: -0.6,
     fontFamily: fonts.serif,
   },
+  
+  // Headings
   title: {
     fontSize: 24,
     fontWeight: '700',
@@ -95,6 +186,8 @@ export const typography = StyleSheet.create({
     color: colors.textPrimary,
     fontFamily: fonts.sans,
   },
+  
+  // Body Text
   body: {
     fontSize: 16,
     color: colors.textSecondary,
@@ -107,6 +200,8 @@ export const typography = StyleSheet.create({
     lineHeight: 20,
     fontFamily: fonts.sans,
   },
+  
+  // Labels & Captions
   label: {
     fontSize: 11,
     fontWeight: '700',
@@ -115,6 +210,14 @@ export const typography = StyleSheet.create({
     textTransform: 'uppercase',
     fontFamily: fonts.sans,
   },
+  caption: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: colors.textMuted,
+    fontFamily: fonts.sans,
+  },
+  
+  // Special Typography
   quote: {
     fontSize: 16,
     fontStyle: 'italic',
@@ -134,8 +237,21 @@ export const typography = StyleSheet.create({
     color: colors.textMuted,
     fontFamily: fonts.sans,
   },
+  
+  // Display Label (for section headers like "LESSON 2 OF 7")
+  displayLabel: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: colors.textMuted,
+    letterSpacing: 2,
+    textTransform: 'uppercase',
+    fontFamily: fonts.sans,
+  },
 });
 
+// ============================================
+// SHADOWS & EFFECTS
+// ============================================
 export const shadows = {
   card: {
     shadowColor: '#000',
@@ -151,4 +267,41 @@ export const shadows = {
     shadowRadius: 20,
     elevation: 10,
   }),
+  softGlow: (color: string) => ({
+    shadowColor: color,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
+  }),
+  anchorGlow: {
+    shadowColor: colors.anchorRed,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.35,
+    shadowRadius: 20,
+    elevation: 16,
+  },
+};
+
+// ============================================
+// ANIMATION DURATIONS
+// ============================================
+export const animation = {
+  fast: 150,
+  normal: 300,
+  slow: 500,
+  verySlow: 800,
+};
+
+// ============================================
+// EXPORT DEFAULT
+// ============================================
+export default {
+  colors,
+  spacing,
+  radius,
+  fonts,
+  typography,
+  shadows,
+  animation,
 };

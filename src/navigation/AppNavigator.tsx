@@ -4,7 +4,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
-import { colors } from '../theme';
+import { LinearGradient } from 'expo-linear-gradient';
+import { colors, radius, shadows } from '../theme';
 import { useApp } from '../context/AppContext';
 
 import IntakeScreen from '../screens/IntakeScreen';
@@ -82,29 +83,60 @@ function TabIcon({ name, focused }: { name: string; focused: boolean }) {
   };
 
   return (
-    <Ionicons
-      name={iconMap[name] ?? 'ellipse-outline'}
-      size={22}
-      color={focused ? colors.tabActive : colors.tabInactive}
-    />
+    <View style={[styles.iconContainer, focused && styles.iconContainerFocused]}>
+      <Ionicons
+        name={iconMap[name] ?? 'ellipse-outline'}
+        size={22}
+        color={focused ? colors.tabActive : colors.tabInactive}
+      />
+      {focused && <View style={styles.activeDot} />}
+    </View>
   );
 }
 
 function TabBarBackground() {
   if (Platform.OS === 'web') {
-    return <View style={styles.tabBarBackgroundWeb} />;
+    return (
+      <View style={styles.tabBarBackgroundWeb}>
+        <LinearGradient
+          colors={['rgba(28, 35, 51, 0.95)', 'rgba(17, 22, 31, 0.98)']}
+          style={styles.tabBarGradient}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+        />
+      </View>
+    );
   }
-  return <BlurView intensity={40} tint="dark" style={styles.tabBarBackgroundNative} />;
+  return (
+    <BlurView intensity={40} tint="dark" style={styles.tabBarBackgroundNative}>
+      <LinearGradient
+        colors={['rgba(28, 35, 51, 0.85)', 'rgba(17, 22, 31, 0.95)']}
+        style={styles.tabBarGradient}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+      />
+    </BlurView>
+  );
 }
 
 function AnchorButton({ onPress }: { onPress?: () => void }) {
   return (
     <TouchableOpacity style={styles.anchorButton} onPress={onPress} activeOpacity={0.8}>
-      <View style={styles.anchorOuter}>
-        <View style={styles.anchorInner}>
+      <LinearGradient
+        colors={['rgba(239, 68, 68, 0.3)', 'rgba(239, 68, 68, 0.1)']}
+        style={styles.anchorOuter}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+      >
+        <LinearGradient
+          colors={['#EF4444', '#DC2626']}
+          style={styles.anchorInner}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
           <Ionicons name="mic" size={24} color="#FFFFFF" />
-        </View>
-      </View>
+        </LinearGradient>
+      </LinearGradient>
     </TouchableOpacity>
   );
 }
@@ -149,7 +181,7 @@ export default function AppNavigator() {
       initialRouteName={onboardingDone ? 'Main' : 'Intake'}
       screenOptions={{
         headerShown: false,
-        contentStyle: { backgroundColor: colors.background },
+        contentStyle: { backgroundColor: colors.surface.dark },
       }}
     >
       <Stack.Screen name="Intake" component={IntakeScreen} />
@@ -193,12 +225,12 @@ const styles = StyleSheet.create({
     right: 16,
     bottom: 16,
     height: 74,
-    borderRadius: 22,
+    borderRadius: radius.xxl,
     borderTopWidth: 0,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
     overflow: 'hidden',
-    backgroundColor: 'rgba(13, 17, 23, 0.55)',
+    backgroundColor: 'transparent',
     shadowColor: '#000',
     shadowOpacity: 0.45,
     shadowRadius: 18,
@@ -209,21 +241,42 @@ const styles = StyleSheet.create({
   },
   tabBarBackgroundNative: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(13, 17, 23, 0.40)',
+    backgroundColor: 'rgba(17, 22, 31, 0.85)',
   },
   tabBarBackgroundWeb: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(13, 17, 23, 0.55)',
+    backgroundColor: 'rgba(17, 22, 31, 0.90)',
     // @ts-ignore
-    backdropFilter: 'blur(18px)',
+    backdropFilter: 'blur(20px)',
   },
-  tabItem: { paddingTop: 2 },
+  tabBarGradient: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  tabItem: {
+    paddingTop: 2,
+  },
   tabLabel: {
     fontSize: 10,
     fontWeight: '600',
     letterSpacing: 0.5,
     textTransform: 'uppercase',
     marginBottom: 2,
+  },
+  iconContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  iconContainerFocused: {
+    // Add subtle glow effect when focused
+  },
+  activeDot: {
+    position: 'absolute',
+    bottom: -6,
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: colors.coral,
   },
   anchorButton: {
     top: -24,
@@ -234,20 +287,14 @@ const styles = StyleSheet.create({
     width: 68,
     height: 68,
     borderRadius: 34,
-    backgroundColor: colors.anchorGlow,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: colors.anchorRed,
-    shadowOpacity: 0.35,
-    shadowRadius: 20,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 16,
+    ...shadows.anchorGlow,
   },
   anchorInner: {
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: colors.anchorRed,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,

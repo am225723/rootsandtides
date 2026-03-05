@@ -1,26 +1,33 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ImageBackground, Dimensions } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { CompositeNavigationProp } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, MainTabParamList } from '../navigation/AppNavigator';
-import ScreenContainer from '../components/ScreenContainer';
-import GlassCard from '../components/GlassCard';
-import SectionHeader from '../components/SectionHeader';
+import GlassCardNew from '../components/GlassCardNew';
+import GradientButton from '../components/GradientButton';
+import MoodIcon from '../components/MoodIcon';
 import QuoteCard from '../components/QuoteCard';
-import { colors, radius, typography } from '../theme';
+import SectionHeader from '../components/SectionHeader';
+import { colors, radius, typography, spacing } from '../theme';
 import { useApp } from '../context/AppContext';
 
-type DashboardNavigationProp = CompositeNavigationProp<BottomTabNavigationProp<MainTabParamList, 'Home'>, NativeStackNavigationProp<RootStackParamList>>;
+type DashboardNavigationProp = CompositeNavigationProp<
+  BottomTabNavigationProp<MainTabParamList, 'Home'>,
+  NativeStackNavigationProp<RootStackParamList>
+>;
 type Props = { navigation: DashboardNavigationProp };
 
-const MOODS = [
-  { label: 'Stormy', icon: '⛈️', color: '#4A5568' },
-  { label: 'Rainy', icon: '🌧️', color: '#4A90D9' },
-  { label: 'Cloudy', icon: '☁️', color: '#A0AEC0' },
-  { label: 'Partly', icon: '⛅', color: '#ECC94B' },
-  { label: 'Sunny', icon: '☀️', color: '#ED8936' },
-];
+type MoodType = 'stormy' | 'rainy' | 'cloudy' | 'partly' | 'sunny';
+
+const MOOD_CONFIG: Record<MoodType, { label: string }> = {
+  stormy: { label: 'Stormy' },
+  rainy: { label: 'Rainy' },
+  cloudy: { label: 'Cloudy' },
+  partly: { label: 'Partly' },
+  sunny: { label: 'Sunny' },
+};
 
 function getGreeting(): string {
   const h = new Date().getHours();
@@ -31,137 +38,416 @@ function getGreeting(): string {
 
 export default function DashboardScreen({ navigation }: Props) {
   const { userProfile, currentMood, saveMoodEntry } = useApp();
-  const [selectedMood, setSelectedMood] = useState<string | null>(currentMood?.mood ?? null);
+  const [selectedMood, setSelectedMood] = useState<MoodType | null>(
+    currentMood?.mood?.toLowerCase() as MoodType | null
+  );
 
-  const handleMoodSelect = async (mood: typeof MOODS[0]) => {
-    setSelectedMood(mood.label);
-    await saveMoodEntry({ mood: mood.label, moodIcon: mood.icon, griefIntensity: 5, innerCurrent: mood.label, emotionalCapacity: 0.5 });
+  const handleMoodSelect = async (mood: MoodType) => {
+    setSelectedMood(mood);
+    const config = MOOD_CONFIG[mood];
+    await saveMoodEntry({
+      mood: config.label,
+      moodIcon: '',
+      griefIntensity: 5,
+      innerCurrent: config.label,
+      emotionalCapacity: 0.5,
+    });
   };
 
+  const screenWidth = Dimensions.get('window').width;
+
   return (
-    <ScreenContainer>
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.greeting}>{getGreeting()}</Text>
-          <Text style={styles.userName}>{userProfile.name || 'Friend'}</Text>
-        </View>
-        <TouchableOpacity style={styles.settingsBtn} onPress={() => navigation.navigate('Profile')}>
-          <Text style={styles.settingsIcon}>⚙️</Text>
-        </TouchableOpacity>
-      </View>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      {/* Background with Forest Theme */}
+      <ImageBackground
+        source={require('../../assets/bg/forest.jpg')}
+        style={styles.background}
+        resizeMode="cover"
+      >
+        <LinearGradient
+          colors={['rgba(17, 22, 31, 0.95)', 'rgba(17, 22, 31, 0.85)', 'rgba(17, 22, 31, 0.75)']}
+          style={styles.gradient}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+        />
+      </ImageBackground>
 
-      <Text style={styles.checkInQuestion}>How are you arriving today?</Text>
-
-      <GlassCard variant="elevated">
-        <View style={styles.moodHeader}>
-          <Text style={styles.moodTitle}>Mood Check-in</Text>
-          <View style={styles.todayBadge}><Text style={styles.todayText}>{currentMood ? currentMood.mood : 'Today'}</Text></View>
-        </View>
-        <View style={styles.moodRow}>
-          {MOODS.map((mood) => (
-            <TouchableOpacity key={mood.label} style={[styles.moodButton, selectedMood === mood.label && { backgroundColor: mood.color + '30' }]} onPress={() => handleMoodSelect(mood)}>
-              <Text style={styles.moodIcon}>{mood.icon}</Text>
-              <Text style={[styles.moodLabel, selectedMood === mood.label && { color: mood.color }]}>{mood.label}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-        <View style={styles.checkInActions}>
-          <TouchableOpacity style={styles.fullCheckInBtn} onPress={() => navigation.navigate('CheckIn')}>
-            <Text style={styles.fullCheckInText}>Full Check-in →</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.historyBtn} onPress={() => navigation.navigate('MoodHistory' as never)}>
-            <Text style={styles.historyBtnText}>View History</Text>
+      <View style={styles.content}>
+        {/* Header with Profile */}
+        <View style={styles.header}>
+          <View style={styles.greetingContainer}>
+            <Text style={styles.greeting}>{getGreeting()}</Text>
+            <Text style={styles.userName}>{userProfile.name || 'Friend'}</Text>
+          </View>
+          <TouchableOpacity 
+            style={styles.profileButton} 
+            onPress={() => navigation.navigate('Profile')}
+          >
+            <Text style={styles.profileIcon}>👤</Text>
           </TouchableOpacity>
         </View>
-      </GlassCard>
 
-      <SectionHeader title="Recommended for you" actionText="View all" onAction={() => navigation.navigate('Journey')} />
+        {/* Check-in Question */}
+        <Text style={styles.checkInQuestion}>How are you arriving today?</Text>
 
-      <TouchableOpacity activeOpacity={0.85} onPress={() => navigation.navigate('AudioSession' as never)}>
-        <GlassCard variant="default">
-          <View style={styles.audioBadge}><Text style={styles.audioBadgeText}>AUDIO</Text></View>
-          <View style={styles.audioContent}>
-            <View style={styles.playButton}><Text style={styles.playIcon}>▶</Text></View>
-            <View style={styles.waveform}>
-              {[...Array(20)].map((_, i) => <View key={i} style={[styles.waveBar, { height: 8 + (i % 5) * 5, backgroundColor: `rgba(74,144,217,${0.3 + (i % 3) * 0.2})` }]} />)}
+        {/* Mood Check-in Card */}
+        <GlassCardNew variant="elevated" style={styles.moodCard}>
+          <View style={styles.moodHeader}>
+            <Text style={styles.moodTitle}>Mood Check-in</Text>
+            <View style={styles.todayBadge}>
+              <Text style={styles.todayText}>{currentMood ? currentMood.mood : 'Today'}</Text>
             </View>
           </View>
-          <Text style={styles.audioTitle}>Wave Rider</Text>
-          <Text style={styles.audioDescription}>A 3-minute guided breathing session to help you navigate sudden waves of grief.</Text>
-          <View style={styles.audioMeta}><Text style={styles.metaTag}>⏱ 3 min</Text><Text style={styles.metaTag}>✦ Grounding</Text></View>
-        </GlassCard>
-      </TouchableOpacity>
-
-      <QuoteCard quote='"Grief is not a disorder, a disease or a sign of weakness. It is an emotional, physical and spiritual necessity, the price you pay for love."' />
-
-      <View style={styles.rootsTidesSection}>
-        <View style={styles.rootsTidesBackground}>
-          <View style={styles.rtOverlay} />
-          <View style={styles.rtContent}>
-            <Text style={styles.rtTitle}>Roots & Tides</Text>
-            <Text style={styles.rtSubtitle}>You don't have to do this all at once.</Text>
-            <TouchableOpacity style={styles.sosButton} onPress={() => navigation.navigate('Escalation')} activeOpacity={0.8}>
-              <Text style={styles.sosIcon}>⚓</Text>
-              <View><Text style={styles.sosTitle}>Start with an Anchor</Text><Text style={styles.sosSubtitle}>Immediate support (SOS)</Text></View>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.gentleButton} onPress={() => navigation.navigate('Journey')} activeOpacity={0.8}>
-              <Text style={styles.gentleIcon}>🌱</Text>
-              <View style={{ flex: 1 }}><Text style={styles.gentleTitle}>Begin a gentle introduction</Text><Text style={styles.gentleSubtitle}>Take it slow</Text></View>
-              <Text style={styles.chevron}>›</Text>
-            </TouchableOpacity>
-            <Text style={styles.paceText}>YOUR PACE, YOUR JOURNEY.</Text>
+          
+          <View style={styles.moodGrid}>
+            {(['stormy', 'rainy', 'cloudy', 'partly', 'sunny'] as MoodType[]).map((mood) => (
+              <MoodIcon
+                key={mood}
+                mood={mood}
+                selected={selectedMood === mood}
+                onPress={() => handleMoodSelect(mood)}
+                size="medium"
+              />
+            ))}
           </View>
+
+          <View style={styles.checkInActions}>
+            <TouchableOpacity 
+              style={styles.fullCheckInBtn} 
+              onPress={() => navigation.navigate('CheckIn')}
+            >
+              <Text style={styles.fullCheckInText}>Full Check-in →</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.historyBtn} 
+              onPress={() => navigation.navigate('MoodHistory' as never)}
+            >
+              <Text style={styles.historyBtnText}>View History</Text>
+            </TouchableOpacity>
+          </View>
+        </GlassCardNew>
+
+        {/* Recommended Section */}
+        <View style={styles.sectionSpacing}>
+          <SectionHeader 
+            title="Recommended for you" 
+            actionText="View all"
+            onAction={() => navigation.navigate('Journey')}
+          />
         </View>
+
+        {/* Audio Session Card */}
+        <TouchableOpacity 
+          activeOpacity={0.85} 
+          onPress={() => navigation.navigate('AudioSession' as never)}
+          style={styles.audioCard}
+        >
+          <GlassCardNew variant="default" noPadding={true}>
+            <View style={styles.audioContent}>
+              <View style={styles.audioBadge}>
+                <Text style={styles.audioBadgeText}>AUDIO</Text>
+              </View>
+              <View style={styles.playArea}>
+                <View style={styles.playButton}>
+                  <Text style={styles.playIcon}>▶</Text>
+                </View>
+                <View style={styles.waveform}>
+                  {[...Array(20)].map((_, i) => (
+                    <View 
+                      key={i} 
+                      style={[
+                        styles.waveBar,
+                        { 
+                          height: 8 + (i % 5) * 5,
+                          backgroundColor: `rgba(74,144,217,${0.3 + (i % 3) * 0.2})`
+                        }
+                      ]} 
+                    />
+                  ))}
+                </View>
+              </View>
+              <View style={styles.audioTextContainer}>
+                <Text style={styles.audioTitle}>Wave Rider</Text>
+                <Text style={styles.audioDescription}>
+                  A 3-minute guided breathing session to help you navigate sudden waves of grief.
+                </Text>
+                <View style={styles.audioMeta}>
+                  <Text style={styles.metaTag}>⏱ 3 min</Text>
+                  <Text style={styles.metaTag}>✦ Grounding</Text>
+                </View>
+              </View>
+            </View>
+          </GlassCardNew>
+        </TouchableOpacity>
+
+        {/* Quote Card */}
+        <View style={styles.sectionSpacing}>
+          <QuoteCard 
+            quote='"Grief is not a disorder, a disease or a sign of weakness. It is an emotional, physical and spiritual necessity, the price you pay for love."' 
+          />
+        </View>
+
+        {/* Roots & Tides Program Section */}
+        <GlassCardNew variant="nature" style={styles.programCard}>
+          <Text style={styles.programTitle}>Roots & Tides</Text>
+          <Text style={styles.programSubtitle}>You don't have to do this all at once.</Text>
+          
+          <GradientButton
+            variant="anchor"
+            onPress={() => navigation.navigate('Escalation')}
+            style={styles.sosButton}
+            icon="⚓"
+          >
+            Start with an Anchor
+            <Text style={styles.buttonSubtext}>Immediate support (SOS)</Text>
+          </GradientButton>
+          
+          <GradientButton
+            variant="secondary"
+            onPress={() => navigation.navigate('Journey')}
+            style={styles.gentleButton}
+            icon="🌱"
+          >
+            Begin a gentle introduction
+            <Text style={styles.buttonSubtext}>Take it slow</Text>
+          </GradientButton>
+          
+          <Text style={styles.paceText}>YOUR PACE, YOUR JOURNEY.</Text>
+        </GlassCardNew>
+
+        <View style={styles.bottomSpacing} />
       </View>
-    </ScreenContainer>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20, paddingTop: 8 },
-  greeting: { fontSize: 14, color: colors.textMuted, marginBottom: 2 },
-  userName: { fontSize: 28, fontWeight: '700', color: colors.textPrimary },
-  settingsBtn: { width: 40, height: 40, borderRadius: 20, backgroundColor: colors.backgroundCard, justifyContent: 'center', alignItems: 'center' },
-  settingsIcon: { fontSize: 18 },
-  checkInQuestion: { fontSize: 22, fontWeight: '600', color: colors.textPrimary, marginBottom: 20 },
-  moodHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
-  moodTitle: { ...typography.subtitle, fontSize: 16 },
-  todayBadge: { backgroundColor: 'rgba(255,255,255,0.1)', paddingHorizontal: 12, paddingVertical: 4, borderRadius: radius.full },
-  todayText: { fontSize: 12, fontWeight: '600', color: colors.textSecondary },
-  moodRow: { flexDirection: 'row', justifyContent: 'space-between' },
-  moodButton: { alignItems: 'center', padding: 8, borderRadius: radius.md, minWidth: 56 },
-  moodIcon: { fontSize: 28, marginBottom: 6 },
-  moodLabel: { fontSize: 11, fontWeight: '600', color: colors.textMuted, textTransform: 'uppercase' },
-  checkInActions: { marginTop: 12, flexDirection: 'row', gap: 8 },
-  fullCheckInBtn: { flex: 1, alignItems: 'center', paddingVertical: 8, borderTopWidth: 1, borderTopColor: colors.border },
-  fullCheckInText: { fontSize: 13, fontWeight: '600', color: colors.coral },
-  historyBtn: { flex: 1, alignItems: 'center', paddingVertical: 8, borderLeftWidth: 1, borderLeftColor: colors.border },
-  historyBtnText: { fontSize: 13, fontWeight: '600', color: colors.textMuted },
-  audioBadge: { position: 'absolute', top: 12, left: 12, backgroundColor: 'rgba(0,0,0,0.5)', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 4, zIndex: 1 },
-  audioBadgeText: { fontSize: 10, fontWeight: '700', color: colors.textPrimary, letterSpacing: 1 },
-  audioContent: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(74,144,217,0.1)', borderRadius: radius.md, padding: 16, marginBottom: 12, height: 80 },
-  playButton: { width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(74,144,217,0.3)', justifyContent: 'center', alignItems: 'center', marginRight: 12 },
-  playIcon: { color: colors.textPrimary, fontSize: 16 },
-  waveform: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 2, height: 40 },
-  waveBar: { width: 3, borderRadius: 2 },
-  audioTitle: { ...typography.subtitle, marginBottom: 4 },
-  audioDescription: { ...typography.bodySmall, marginBottom: 12 },
-  audioMeta: { flexDirection: 'row', gap: 16 },
-  metaTag: { ...typography.tag },
-  rootsTidesSection: { marginTop: 8, marginHorizontal: -20 },
-  rootsTidesBackground: { backgroundColor: '#0A1A12', position: 'relative' },
-  rtOverlay: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.3)' },
-  rtContent: { padding: 24, alignItems: 'center' },
-  rtTitle: { fontSize: 28, fontWeight: '700', color: colors.textPrimary, marginBottom: 4 },
-  rtSubtitle: { ...typography.body, color: colors.textSecondary, marginBottom: 24 },
-  sosButton: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(74,144,217,0.2)', borderRadius: radius.lg, padding: 16, width: '100%', marginBottom: 12, gap: 12 },
-  sosIcon: { fontSize: 20, width: 40, height: 40, backgroundColor: 'rgba(74,144,217,0.3)', borderRadius: 20, textAlign: 'center', lineHeight: 40 },
-  sosTitle: { fontSize: 16, fontWeight: '700', color: colors.textPrimary },
-  sosSubtitle: { fontSize: 13, color: colors.textSecondary },
-  gentleButton: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.06)', borderRadius: radius.lg, padding: 16, width: '100%', marginBottom: 20, gap: 12 },
-  gentleIcon: { fontSize: 18, color: colors.textSecondary },
-  gentleTitle: { fontSize: 15, fontWeight: '600', color: colors.textPrimary },
-  gentleSubtitle: { fontSize: 13, color: colors.textMuted },
-  chevron: { fontSize: 24, color: colors.textMuted },
-  paceText: { ...typography.label, color: colors.textMuted, marginTop: 4 },
+  container: {
+    flex: 1,
+    backgroundColor: colors.surface.dark,
+  },
+  background: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  gradient: {
+    flex: 1,
+  },
+  content: {
+    padding: spacing.md,
+    paddingTop: spacing.xl,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: spacing.lg,
+  },
+  greetingContainer: {
+    flex: 1,
+  },
+  greeting: {
+    ...typography.caption,
+    color: colors.textMuted,
+    marginBottom: spacing.xs,
+  },
+  userName: {
+    ...typography.heroTitle,
+    fontSize: 32,
+    lineHeight: 40,
+  },
+  profileButton: {
+    width: 48,
+    height: 48,
+    borderRadius: radius.full,
+    backgroundColor: colors.surface.card,
+    borderWidth: 1,
+    borderColor: colors.border,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  profileIcon: {
+    fontSize: 22,
+  },
+  checkInQuestion: {
+    ...typography.title,
+    fontSize: 26,
+    marginBottom: spacing.lg,
+    lineHeight: 32,
+  },
+  moodCard: {
+    marginBottom: spacing.xl,
+  },
+  moodHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: spacing.lg,
+  },
+  moodTitle: {
+    ...typography.subtitle,
+    fontSize: 18,
+  },
+  todayBadge: {
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    borderRadius: radius.full,
+  },
+  todayText: {
+    ...typography.caption,
+    color: colors.textSecondary,
+  },
+  moodGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: spacing.lg,
+  },
+  checkInActions: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    paddingTop: spacing.md,
+  },
+  fullCheckInBtn: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: spacing.md,
+  },
+  fullCheckInText: {
+    ...typography.buttonText,
+    fontSize: 14,
+    color: colors.coral,
+  },
+  historyBtn: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: spacing.md,
+    borderLeftWidth: 1,
+    borderLeftColor: colors.border,
+  },
+  historyBtnText: {
+    ...typography.buttonText,
+    fontSize: 14,
+    color: colors.textMuted,
+  },
+  sectionSpacing: {
+    marginBottom: spacing.md,
+  },
+  audioCard: {
+    marginBottom: spacing.lg,
+  },
+  audioContent: {
+    padding: spacing.lg,
+  },
+  audioBadge: {
+    position: 'absolute',
+    top: spacing.md,
+    left: spacing.md,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 4,
+    borderRadius: radius.sm,
+    zIndex: 1,
+  },
+  audioBadgeText: {
+    ...typography.caption,
+    color: colors.textPrimary,
+    letterSpacing: 1,
+  },
+  playArea: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.blueSoft,
+    borderRadius: radius.lg,
+    padding: spacing.lg,
+    marginBottom: spacing.md,
+    height: 96,
+  },
+  playButton: {
+    width: 48,
+    height: 48,
+    borderRadius: radius.full,
+    backgroundColor: colors.blueGlow,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: spacing.md,
+  },
+  playIcon: {
+    color: colors.textPrimary,
+    fontSize: 18,
+    marginLeft: 2,
+  },
+  waveform: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
+    height: 40,
+  },
+  waveBar: {
+    width: 3,
+    borderRadius: 2,
+  },
+  audioTextContainer: {
+    paddingHorizontal: spacing.md,
+  },
+  audioTitle: {
+    ...typography.subtitle,
+    marginBottom: spacing.xs,
+    paddingLeft: spacing.md,
+  },
+  audioDescription: {
+    ...typography.bodySmall,
+    marginBottom: spacing.md,
+    paddingHorizontal: spacing.md,
+    lineHeight: 20,
+  },
+  audioMeta: {
+    flexDirection: 'row',
+    gap: spacing.lg,
+    paddingHorizontal: spacing.md,
+  },
+  metaTag: {
+    ...typography.tag,
+  },
+  programCard: {
+    marginTop: spacing.md,
+    marginBottom: spacing.xl,
+  },
+  programTitle: {
+    ...typography.title,
+    fontSize: 28,
+    textAlign: 'center',
+    marginBottom: spacing.xs,
+  },
+  programSubtitle: {
+    ...typography.body,
+    color: colors.textSecondary,
+    textAlign: 'center',
+    marginBottom: spacing.lg,
+  },
+  sosButton: {
+    marginBottom: spacing.md,
+  },
+  gentleButton: {
+    marginBottom: spacing.lg,
+  },
+  buttonSubtext: {
+    ...typography.bodySmall,
+    color: colors.textMuted,
+    marginTop: 4,
+  },
+  paceText: {
+    ...typography.label,
+    color: colors.textMuted,
+    textAlign: 'center',
+  },
+  bottomSpacing: {
+    height: spacing.xxl,
+  },
 });
