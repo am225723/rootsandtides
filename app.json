@@ -45,8 +45,9 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "rootsandtides"
-      }
+        "projectId": "46913cec-80b1-40f0-aac7-b67d675239d0"
+      },
+      "router": {}
     }
   }
 }
