@@ -1,9 +1,0 @@
-{
-  "github": {
-    "silent": true
-  },
-  "buildCommand": "expo export:web",
-  "installCommand": "npm install",
-  "outputDirectory": "dist",
-  "framework": null
-}

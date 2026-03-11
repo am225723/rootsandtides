@@ -1,0 +1,40 @@
+20:31:47.913 Running build in Washington, D.C., USA (East) – iad1
+20:31:47.914 Build machine configuration: 4 cores, 8 GB
+20:31:48.097 Cloning github.com/am225723/rootsandtides (Branch: main, Commit: f77e1ed)
+20:31:48.097 Previous build caches not available.
+20:31:49.274 Cloning completed: 1.177s
+20:31:49.617 Running "vercel build"
+20:31:50.235 Vercel CLI 50.28.0
+20:31:50.829 Running "install" command: `npm install`...
+20:31:54.467 npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+20:31:55.029 npm warn deprecated lodash.get@4.4.2: This package is deprecated. Use the optional chaining (?.) operator instead.
+20:31:55.538 npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+20:31:55.603 npm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+20:31:56.881 npm warn deprecated @oclif/screen@3.0.8: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+20:31:58.523 npm warn deprecated rimraf@2.4.5: Rimraf versions prior to v4 are no longer supported
+20:31:58.804 npm warn deprecated glob@6.0.4: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+20:31:59.771 npm warn deprecated @xmldom/xmldom@0.7.13: this version is no longer supported, please update to at least 0.8.*
+20:32:01.339 npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+20:32:01.451 npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+20:32:01.522 npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+20:32:01.544 npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+20:32:01.628 npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+20:32:01.767 npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+20:32:03.154 npm warn deprecated tar@7.5.7: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+20:32:12.549 
+20:32:12.549 added 1243 packages, and audited 1244 packages in 21s
+20:32:12.549 
+20:32:12.549 99 packages are looking for funding
+20:32:12.549   run `npm fund` for details
+20:32:12.561 
+20:32:12.561 6 vulnerabilities (1 low, 1 moderate, 4 high)
+20:32:12.561 
+20:32:12.562 To address issues that do not require attention, run:
+20:32:12.562   npm audit fix
+20:32:12.562 
+20:32:12.562 To address all issues (including breaking changes), run:
+20:32:12.562   npm audit fix --force
+20:32:12.562 
+20:32:12.562 Run `npm audit` for details.
+20:32:14.103 CommandError: expo export:web can only be used with Webpack. Use expo export for other bundlers.
+20:32:14.110 Error: Command "expo export:web" exited with 1
